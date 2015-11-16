@@ -2,7 +2,7 @@
 layout: post
 title: "Setting up the discovery of a network share / server with Avahi"
 date: 2015-11-16 23:40:00 +0000
-categories: centos oss f.lux
+categories: avahi service mdns cifs smb afp media-server
 ---
 I recently replaced FreeNAS with FreeBSD after installing even basic tools in the main OS (without first using a jail) became tedious and I wanted to explore how each of the components (e.g sharing & plugins) were implemented.
 
