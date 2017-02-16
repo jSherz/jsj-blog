@@ -19,3 +19,4 @@ github_username:  jSherz
 
 # Build settings
 markdown: kramdown
+include: ['assets/*']
