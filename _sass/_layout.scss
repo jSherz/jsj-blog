@@ -113,6 +113,18 @@
     margin-left: 0;
 }
 
+.social-media-list {
+    font-size: 1.2em;
+
+    li {
+      margin-bottom: 0.5em;
+    }
+
+    span {
+      padding-left: 1em;
+    }
+}
+
 .footer-col-wrapper {
     font-size: 15px;
     color: $grey-color;
