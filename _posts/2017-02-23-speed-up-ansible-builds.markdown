@@ -16,7 +16,7 @@ as my playbook):
 
 ```
 [ssh_connection]
-pipelining = False
+pipelining = True
 ```
 
 Tada! Now a playbook that took several minutes was done in a fraction of that
