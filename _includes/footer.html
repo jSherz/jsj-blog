@@ -1,44 +1,51 @@
-<footer class="site-footer">
+<footer class="container pt-4 my-md-5 pt-md-5 border-top">
+    <div class="row">
+        <div class="col-sm-4">
+            <h5 class="footer-heading">{{ site.title }}</h5>
+            <p>{{ site.description }}</p>
+        </div>
+        <div class="col-sm-4">
+            <h5>Contact</h5>
+            <p>Need to get in touch? <a href="mailto:{{ site.email }}">E-mail me</a> or try one of the social media
+                accounts to the right.</p>
+            <p>Find my PGP key <a href="https://keybase.io/jsj">on
+                Keybase</a>.
+            </p>
+        </div>
+        <div id="social-list" class="col-sm-4">
+            <h5>Social</h5>
+            <ul class="list-unstyled text-small">
+                <li>
+                    <a href="https://www.linkedin.com/in/{{ site.linkedin_username }}">
+                        <i class="fab fa-linkedin"></i><span>LinkedIn</span>
+                    </a>
+                </li>
 
-  <div class="wrapper">
+                <li>
+                    <a href="https://github.com/{{ site.github_username }}">
+                        <i class="fab fa-github-square"></i><span>GitHub</span>
+                    </a>
+                </li>
 
-    <h2 class="footer-heading">{{ site.title }}</h2>
-
-    <div class="footer-col-wrapper">
-      <div class="footer-col footer-col-1">
-        <ul class="contact-list">
-          <li>{{ site.author }}</li>
-          <li><a href="mailto:{{ site.email }}">{{ site.email }}</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-col footer-col-2">
-        <ul class="social-media-list">
-          <li>
-            <a href="https://www.linkedin.com/in/{{ site.linkedin_username }}">
-              <i class="fa fa-linkedin-square"></i><span>LinkedIn</span>
-            </a>
-          </li>
-
-          <li>
-            <a href="https://github.com/{{ site.github_username }}">
-              <i class="fa fa-github"></i><span>GitHub</span>
-            </a>
-          </li>
-
-          <li>
-            <a href="https://twitter.com/{{ site.twitter_username }}">
-              <i class="fa fa-twitter"></i><span>Twitter</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-
-      <div class="footer-col footer-col-3">
-        <p>{{ site.description }}</p>
-      </div>
+                <li>
+                    <a href="https://twitter.com/{{ site.twitter_username }}">
+                        <i class="fab fa-twitter-square"></i><span>Twitter</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
     </div>
-
-  </div>
-
 </footer>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"
+        integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
+        crossorigin="anonymous"></script>
+<script defer src="https://pro.fontawesome.com/releases/v5.1.0/js/all.js"
+        integrity="sha384-E5SpgaZcbSJx0Iabb3Jr2AfTRiFnrdOw1mhO19DzzrT9L+wCpDyHUG2q07aQdO6E"
+        crossorigin="anonymous"></script>

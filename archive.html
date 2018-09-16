@@ -1,0 +1,35 @@
+---
+layout: default
+---
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg">
+            <h2 class="page-heading">Archive</h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg">
+            <ul id="post-list" class="list-group">
+                {% for post in site.posts %}
+                <li class="list-group-item">
+                    <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
+
+                    <h2>
+                        <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
+                    </h2>
+
+                    {% for category in post.categories %}
+                    <span class="badge badge-light">{{category}}</span>
+                    {% endfor %}
+                </li>
+                {% endfor %}
+
+                <li class="list-group-item">
+                    Subscribe <a href="{{ "/feed.xml" | prepend: site.baseurl }}">via RSS</a>.
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

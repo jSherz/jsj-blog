@@ -2,22 +2,82 @@
 layout: default
 ---
 
-<div class="home">
+<div class="container">
+    <div class="row">
+        <div class="col-lg">
+            <h2>Posts</h2>
+        </div>
+    </div>
 
-  <h1 class="page-heading">Posts</h1>
+    <div class="row">
+        <div class="col-lg">
+            <ul id="post-list" class="list-group">
+                {% assign show = 5 %}
+                {% for post in site.posts limit:show %}
+                <li class="list-group-item">
+                    <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
 
-  <ul class="post-list">
-    {% for post in site.posts %}
-      <li>
-        <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
+                    <h3>
+                        <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
+                    </h3>
 
-        <h2>
-          <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
-        </h2>
-      </li>
-    {% endfor %}
-  </ul>
+                    {% for category in post.categories %}
+                    <span class="badge badge-light">{{category}}</span>
+                    {% endfor %}
+                </li>
+                {% endfor %}
 
-  <p class="rss-subscribe">subscribe <a href="{{ "/feed.xml" | prepend: site.baseurl }}">via RSS</a></p>
+                <li class="list-group-item">
+                    Want more? <a href="{{ site.baseurl }}/archive.html">Read the other {{ site.posts.size | minus: show
+                    }} articles</a> or subscribe <a href="{{ "/feed.xml"
+                    | prepend: site.baseurl }}">via RSS</a>.
+                </li>
+            </ul>
+        </div>
+    </div>
 
+    <div class="row mt-3">
+        <div class="col-lg">
+            <h2>Open source</h2>
+        </div>
+    </div>
+
+    <div id="open-source-container" class="row mt-3">
+        <div class="col-sm">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">docs-auth-lambda</h5>
+                    <p class="card-text">Secure a private static site with GSuite and Lambda@Edge.</p>
+                    <a href="#" class="btn btn-sm btn-block btn-light">View source</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">docs-auth-lambda</h5>
+                    <p class="card-text">Secure a private static site with GSuite and Lambda@Edge.</p>
+                    <a href="#" class="btn btn-sm btn-block btn-light">View source</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">docs-auth-lambda</h5>
+                    <p class="card-text">Secure a private static site with GSuite and Lambda@Edge.</p>
+                    <a href="#" class="btn btn-sm btn-block btn-light">View source</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">docs-auth-lambda</h5>
+                    <p class="card-text">Secure a private static site with GSuite and Lambda@Edge.</p>
+                    <a href="#" class="btn btn-sm btn-block btn-light">View source</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
