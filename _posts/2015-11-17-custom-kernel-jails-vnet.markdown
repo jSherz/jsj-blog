@@ -4,7 +4,7 @@ title: "Compiling a custom FreeBSD kernel to enable VNET support for jails"
 date: 2015-11-17 19:13:00 +0000
 categories: freebsd jails kernel vnet
 ---
-One issue I had while replacing FreeNAS with FreeBSD was that, by defualt, vnet support isn't enabled in the kernel. To resolve this, I compiled a custom kernel as follows:
+One issue I had while replacing FreeNAS with FreeBSD was that, by defualt, vnet support isn&rsquo;t enabled in the kernel. To resolve this, I compiled a custom kernel as follows:
 
 ## Step 1 - download the kernel sources
 
@@ -22,7 +22,7 @@ cd /usr/src/sys/amd64/conf # Replace amd64 with the desired architecture
 cp GENERIC MYKERNEL
 {% endhighlight %}
 
-Once you've got a copy of the generic kernel configuration (`MYKERNEL`), make any required changes. In my case, I added the following, as per the instructions on the [iocage README](https://github.com/iocage/iocage/blob/master/README.md):
+Once you&rsquo;ve got a copy of the generic kernel configuration (`MYKERNEL`), make any required changes. In my case, I added the following, as per the instructions on the [iocage README](https://github.com/iocage/iocage/blob/master/README.md):
 
 {% highlight shell %}
 options         VIMAGE # VNET/Vimage support
@@ -38,7 +38,7 @@ make buildkernel KERNCONF=MYKERNEL
 make installkernel KERNCONF=MYKERNEL
 {% endhighlight %}
 
-Let me know if you have any questions or... more importantly, if there's an easier way of doing this!
+Let me know if you have any questions or... more importantly, if there&rsquo;s an easier way of doing this!
 
 ## Sources
 

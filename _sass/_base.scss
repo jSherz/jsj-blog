@@ -1,10 +1,16 @@
 /**
  * Basic styling
  */
+* {
+    box-sizing: border-box;
+}
+
 body {
+    background: url('/assets/jsj.svg') $background-color no-repeat center fixed;
+    margin: 0;
+    padding: 0;
     font: $base-font-weight #{$base-font-size}/#{$base-line-height} $base-font-family;
     color: $text-color;
-    background-color: $background-color;
     -webkit-text-size-adjust: 100%;
     -webkit-font-feature-settings: "kern" 1;
     -moz-font-feature-settings: "kern" 1;
@@ -13,6 +19,10 @@ body {
     font-kerning: normal;
 }
 
-%vertical-rhythm {
-    margin-bottom: $spacing-unit / 2;
+a {
+    color: #30508E;
+
+    &:hover {
+        color: lighten(#30508E, 20%);
+    }
 }

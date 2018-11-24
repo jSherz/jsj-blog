@@ -4,9 +4,8 @@ title: "Want faster Ansible runs? Try enabling pipelining!"
 date: 2017-02-23 20:05:06 +0100
 categories: ansible infrastructure platform engineering
 ---
-
-I've always wondered if there's a way to speed up Ansible executions as creating
-a new SSH connection for each command seemed excessive. However, I'd never
+I&rsquo;ve always wondered if there&rsquo;s a way to speed up Ansible executions as creating
+a new SSH connection for each command seemed excessive. However, I&rsquo;d never
 looked for a solution until today when I discovered a very neat feature that
 shares SSH connections called pipelining.
 

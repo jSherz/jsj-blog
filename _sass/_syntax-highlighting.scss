@@ -1,6 +1,10 @@
 /**
  * Syntax highlighting styles
  */
+%vertical-rhythm {
+  margin-bottom: $spacing-unit / 2;
+}
+
 .highlight {
   background: #f8f8f8;
   @extend %vertical-rhythm;

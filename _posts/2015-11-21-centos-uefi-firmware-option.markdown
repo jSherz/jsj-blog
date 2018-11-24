@@ -61,7 +61,7 @@ Then make the script executable:
 chmod +x /etc/grub.d/50_uefi-firmware
 {% endhighlight %}
 
-Once it's executable, you can see the menu entry that will be added by running `grub2-mkconfig`. If successful, it will return something similar to the following (providing you're booting into an EFI install).
+Once it&rsquo;s executable, you can see the menu entry that will be added by running `grub2-mkconfig`. If successful, it will return something similar to the following (providing you&rsquo;re booting into an EFI install).
 
 {% highlight shell %}
 # ...

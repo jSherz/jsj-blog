@@ -2,34 +2,39 @@
 layout: default
 ---
 
-<div class="container">
-    <div class="row">
-        <div class="col-lg">
-            <h2 class="page-heading">Archive</h2>
-        </div>
-    </div>
+<div id="archive">
+    <h2>Archive</h2>
 
-    <div class="row">
-        <div class="col-lg">
-            <ul id="post-list" class="list-group">
-                {% for post in site.posts %}
-                <li class="list-group-item">
-                    <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
+    <div>
+        <ul id="post-list">
+            {% for post in site.posts %}
+            <li>
+                <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
 
-                    <h2>
-                        <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
-                    </h2>
+                <h3>
+                    <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
+                </h3>
 
-                    {% for category in post.categories %}
-                    <span class="badge badge-light">{{category}}</span>
-                    {% endfor %}
-                </li>
+                {% for category in post.categories %}
+                <span class="post-tag">{{category}}</span>
                 {% endfor %}
 
-                <li class="list-group-item">
-                    Subscribe <a href="{{ "/feed.xml" | prepend: site.baseurl }}">via RSS</a>.
-                </li>
-            </ul>
-        </div>
+                <p>
+                    {{ post.content | strip_html | truncatewords: 60 }}
+                </p>
+
+                <div class="post-read-more">
+                    <a href="{{ post.url | prepend: site.baseurl }}">
+                        <span>Read more</span>
+                        <i class="far fa-arrow-right"></i>
+                    </a>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+
+        <p id="post-list-read-more">
+            Subscribe <a href="{{ "/feed.xml" | prepend: site.baseurl }}">via RSS</a>.
+        </p>
     </div>
 </div>

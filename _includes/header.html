@@ -1,19 +1,19 @@
-<div class="border-bottom mb-3">
-    <header class="container d-flex flex-column flex-md-row align-items-center p-3 px-md-4">
-        <h5 class="my-0 font-weight-normal">
+<header id="site-header">
+    <div>
+        <h1>
             <a href="{{ site.baseurl }}/">{{ site.title }}</a>
-        </h5>
-        <span id="tagline" class="navbar-text mr-md-auto text-muted">{{ site.description }}</span>
-        <nav class="my-2 my-md-0 mr-md-3">
+        </h1>
+
+        <nav>
             {% for my_page in site.pages %}
             {% if my_page.title %}
-            <a class="p-2 text-dark" href="{{ my_page.url | prepend: site.baseurl }}">{{ my_page.title }}</a>
+            <a href="{{ my_page.url | prepend: site.baseurl }}">{{ my_page.title }}</a>
             {% endif %}
             {% endfor %}
             <a href="https://github.com/{{ site.github_username }}" title="View James on GitHub"><i
-                    class="fab fa-2x fa-github-square"></i></a>
+                    class="fab fa-github"></i></a>
             <a href="https://www.linkedin.com/in/{{ site.linkedin_username }}" title="View James on LinkedIn"><i
-                    class="fab fa-2x fa-linkedin"></i></a>
+                    class="fab fa-linkedin-in"></i></a>
         </nav>
-    </header>
-</div>
+    </div>
+</header>

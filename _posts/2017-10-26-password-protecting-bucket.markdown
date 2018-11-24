@@ -4,8 +4,7 @@ title: "Providing password-based access to a private S3 bucket with Lambda and C
 date: 2017-10-26 19:13:00 +0100
 categories: infrastructure aws s3 bucket password lambda cloudfront
 ---
-
-Amazon's Simple Storage Service doesn't natively support password-protected
+Amazon&rsquo;s Simple Storage Service doesn&rsquo;t natively support password-protected
 access, however we can use a CloudFront distribution and private ACL to
 control access to the bucket and then use Lambda to issue signed cookies after
 validating a password.
@@ -28,7 +27,7 @@ validating a password.
 
    *See:* [bucket-access-button.js on GitHub](https://github.com/jSherz/bucket-access-button/blob/master/bucket_access_button.js)
 
-5. The lambda function returns the values for several cookies. These aren't set
+5. The lambda function returns the values for several cookies. These aren&rsquo;t set
    by the function itself / API Gateway as it would require setting up a custom
    domain name for API Gateway and also using the same domain for the CloudFront
    distribution.
@@ -38,7 +37,7 @@ validating a password.
 
 ## Tutorial
 
-**Protip:** For an easy way to create all of the required infrastructure, I've created a [Terraform module](https://github.com/jSherz/bucket-access-button/tree/master/terraform_example).
+**Protip:** For an easy way to create all of the required infrastructure, I&rsquo;ve created a [Terraform module](https://github.com/jSherz/bucket-access-button/tree/master/terraform_example).
 
 1. Create a bucket with a [private ACL](https://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html).
    The ACL prevents direct access to the bucket.
@@ -53,7 +52,7 @@ validating a password.
 4. On your CloudFront distribution, add a [custom error response](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/custom-error-pages.html)
    that redirects errors with code `403` to `/login.html` and a `200` status code.
 
-   *This step will show users the login page, even if they don't have access to the access the object directly.*
+   *This step will show users the login page, even if they don&rsquo;t have access to the access the object directly.*
 
 5. In the "Security Credentials" section of IAM, create a [CloudFront private key](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-trusted-signers.html).
 

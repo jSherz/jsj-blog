@@ -4,7 +4,6 @@ title: "Securing private docs with CloudFront & Lambda@Edge"
 date: 2018-04-14 09:31:00 +0100
 categories: s3 CloudFront Lambda@Edge Jekyll docs ReadTheDocs
 ---
-
 In [a previous article]({% post_url 2017-10-26-password-protecting-bucket %}),
 we looked at a method of restricting access to a CloudFront distribution with
 the use of a CloudFront private key that could sign cookies granting access to
@@ -18,7 +17,7 @@ internal static site or docs.
 
 ## Step 1. The Bucket
 
-To begin, we're going to create an S3 bucket that has a "private" access
+To begin, we&rsquo;re going to create an S3 bucket that has a "private" access
 control list (ACL). The ACL is very important as it prevents users from
 accessing the files inside of it without passing through our CloudFront
 distribution (and thus Lambda function).
@@ -34,7 +33,7 @@ aws s3api create-bucket --bucket jsherz-com-docs-test \
 
 Our next step is to create a CloudFront origin access identity. This can be
 assigned to a CloudFront distribution and then used in an S3 bucket policy
-to allow CloudFront to serve the bucket's files even though they're private.
+to allow CloudFront to serve the bucket&rsquo;s files even though they&rsquo;re private.
 
 ```bash
 aws cloudfront create-cloud-front-origin-access-identity \
@@ -42,8 +41,8 @@ aws cloudfront create-cloud-front-origin-access-identity \
         CallerReference='Private docs',Comment='Private docs'
 ```
 
-After we've created that, note down the canonical user ID (called S3CanonicalUserId
-in the response) and then adapt the following command to set our bucket's policy:
+After we&rsquo;ve created that, note down the canonical user ID (called S3CanonicalUserId
+in the response) and then adapt the following command to set our bucket&rsquo;s policy:
 
 ```bash
 aws s3api put-bucket-policy --bucket jsherz-com-docs-test \
@@ -70,8 +69,8 @@ For more information about the origin access identity and the above policy, see:
 
 ## Step 2. The Lambda Function
 
-Now that we've set up our bucket & origin access identity, we can create the
-Lambda function that will authenticate users. In this example, we're going to
+Now that we&rsquo;ve set up our bucket & origin access identity, we can create the
+Lambda function that will authenticate users. In this example, we&rsquo;re going to
 use a static / hard-coded list of users and [basic auth](https://en.wikipedia.org/wiki/Basic_access_authentication)
 to identify them. For a more advanced setup, you could authenticate the user
 against an external source (e.g. database, LDAP) and then issue them with a
@@ -142,11 +141,11 @@ aws lambda publish-version --region us-east-1 \
                             --function-name authenticate-docs
 ```
 
-OK! We're getting closer. Last step (I promise), CloudFront.
+OK! We&rsquo;re getting closer. Last step (I promise), CloudFront.
 
 ## Step 3. The CloudFront Distribution
 
-This is a bit of a lengthy command, but we've got a lot of settings to go
+This is a bit of a lengthy command, but we&rsquo;ve got a lot of settings to go
 through. If you prefer, you can create the CloudFront distribution through the
 AWS console. The key parts are the "Origins" section that identifies that we
 want to use our CloudFront origin access identity with the S3 bucket and also
@@ -270,7 +269,7 @@ See the Lambda code for some valid users.
     ensure you publish the latest version and update the CloudFront
     distribution.
 
-* Before uploading your docs or internal static site, check that you can't
+* Before uploading your docs or internal static site, check that you can&rsquo;t
     access the bucket directly and that requests to the CloudFront distribution
     are being authenticated.
 
@@ -283,7 +282,7 @@ See the Lambda code for some valid users.
 * When testing the distribution is setup correctly, upload an index.html file
     to the S3 bucket or you may see an "Access Denied" error.
 
-## That's it!
+## That&rsquo;s it!
 
 I hope that you managed to follow along and get everything working (or if you
 chose not to that the examples were clear enough). Contributions to [the Lambda function](https://github.com/jSherz/lambda-at-edge-basic-auth)

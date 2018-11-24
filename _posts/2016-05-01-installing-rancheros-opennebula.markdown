@@ -4,12 +4,11 @@ title: "Installing RancherOS on OpenNebula"
 date: 2016-05-01 11:23:00 +0100
 categories: docker rancher rancheros opennebula
 ---
-
 At the time of writing, [Rancher](https://github.com/rancher/os) does not publish VM images that are not aimed at a particular cloud provider and I therefore set about installing RancherOS with just the provided ISO.
 
 ## Step 1: Download and import images
 
-To begin, download the RancherOS ISO and then upload it into OpenNebula's image system.
+To begin, download the RancherOS ISO and then upload it into OpenNebula&rsquo;s image system.
 
 ```bash
 sudo -u oneadmin -i
@@ -21,7 +20,7 @@ oneimage create --name RancherOS --path /tmp/rancheros.iso \
 
 The image type `CDROM` is used as the ISO is used to install the OS rather than as a boot disk. Although it may be possible to boot from the image with a different prefix than `hd`, this is the one I got working first (using `vd` did not work).
 
-Now that we have an installer ISO, let's create a blank [qcow2](https://en.wikipedia.org/wiki/Qcow) image that will be used as the OS disk and then import it into OpenNebula.
+Now that we have an installer ISO, let&rsquo;s create a blank [qcow2](https://en.wikipedia.org/wiki/Qcow) image that will be used as the OS disk and then import it into OpenNebula.
 
 ```bash
 qemu-img create -f qcow2 -o size=10G /tmp/blank.qcow2
@@ -71,7 +70,7 @@ OS=[
 
 You can either adapt the above or manually create one with the `onetemplate` tool or SunStone GUI.
 
-*NB:* As the RancherOS ISO does not support OpenNebula's contextualization, we must manually configure networking (shown below).
+*NB:* As the RancherOS ISO does not support OpenNebula&rsquo;s contextualization, we must manually configure networking (shown below).
 
 ### Documentation
 
@@ -111,7 +110,7 @@ rancher:
         - 8.8.4.4
 ```
 
-Once you've made a cloud config file with all of the required configuration, use the `ros` command to install RancherOS to the main disk.
+Once you&rsquo;ve made a cloud config file with all of the required configuration, use the `ros` command to install RancherOS to the main disk.
 
 ```bash
 vi cloud-config.yml
@@ -130,4 +129,4 @@ sudo docker run -d --restart=always -p 8080:8080 rancher/server
 
 In a few minutes, your new RancherOS install will be visible at `http://1.2.3.4:8080`. Enjoy!
 
-If anything isn't clear please contact me via Twitter or the e-mail shown below and I'll do my best to update this guide.
+If anything isn&rsquo;t clear please contact me via Twitter or the e-mail shown below and I&rsquo;ll do my best to update this guide.

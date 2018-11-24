@@ -4,7 +4,6 @@ title: "Note to self: if you want PostgreSQL to accept your non-lowercase databa
 date: 2016-08-15 13:50:01 +0100
 categories: docker configserver firewall iptables csf debian systemd
 ---
-
 The following creates the database `frustratingerror`:
 
 ```sql
