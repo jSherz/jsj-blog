@@ -20,3 +20,7 @@ linkedin_username: james-sherwood-jones-775a13a0
 # Build settings
 markdown: kramdown
 include: ['assets/*']
+plugins:
+- jekyll-seo-tag
+- jekyll-sitemap
+- jekyll-feed

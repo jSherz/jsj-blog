@@ -1,0 +1,86 @@
+==================================================================
+https://keybase.io/jsj
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of https://jsherz.com
+  * I am jsj (https://keybase.io/jsj) on keybase.
+  * I have a public key with fingerprint 9571 ED2C 1E41 C863 0CC0  9371 FFCD BB91 ECE8 14DA
+
+To do so, I am signing this object:
+
+{
+  "body": {
+    "key": {
+      "eldest_kid": "0120d81334bea5be1be304dfff2500f9bee045f83ef3b1e6522ddef19ae1ce4266f30a",
+      "fingerprint": "9571ed2c1e41c8630cc09371ffcdbb91ece814da",
+      "host": "keybase.io",
+      "key_id": "ffcdbb91ece814da",
+      "kid": "0101990b3ce6cc078c13f79889f7256db1a5fa967c9fc7e453b01699d5064dc42fc60a",
+      "uid": "f848674e3dbb0ed17472c4f16711bd19",
+      "username": "jsj"
+    },
+    "merkle_root": {
+      "ctime": 1543080178,
+      "hash_meta": "37e7279ec7c60962d7f3216a7abcab89e0aa21a5f2fd66cac1436f0affc57b96",
+      "seqno": 4003173
+    },
+    "revoke": {
+      "sig_ids": [
+        "74de177192ece9ab0cfa604cd274a6dcb39aee5db1812ba154ca1997538c44f40f"
+      ]
+    },
+    "service": {
+      "hostname": "jsherz.com",
+      "protocol": "https:"
+    },
+    "type": "web_service_binding",
+    "version": 1
+  },
+  "ctime": 1543080246,
+  "expire_in": 157680000,
+  "prev": "acf4583cfefc1c54d8dbc2490bda9d25a668b34cd370cbbf1394a4eadeffbc24",
+  "seqno": 16,
+  "tag": "signature"
+}
+
+which yields the signature:
+
+-----BEGIN PGP MESSAGE-----
+
+owFtU2tsFUUY7QNIIShYoa1aSrvF8rSd2Z3d2b2QUFGqRcIr8AOKXGdnZ9qlvY/u
+XUp5FFFiECJQECjIyxgVeYg0taVYBKpgbsAasICARKgYQhWlSizhYa+zVTQmzp/N
+zJ7vnPOd+ab6ocS4hPhYS9PaG9cHXIw/2W7GFd1ZYSySzJC1QPItkkpZ94eVWSzi
++kttS/JJAMrA0qGiIJMR1WTQZApAFudcVgHghskYQCrXFcYVEzJNlWXLYhwahEHK
+kKxpXAFEGiVxO1jMnLBjB11Ba6gYMkumkCFIdU0BlAJDwZBzapmmARllOkSWV1gS
+ingVwpxJIizXDokzsfF32/sf/APfABoGMBXKNMGNdQoVjg1dNziWVc0yIVE5MTRM
+DU4xQ6piAqgZhqUCDVkUyZxq3b7n/aWjI13DiClCDTALYoRlijjUMISmBQ0PGGFO
+kASYQM+NzJWqRkkB5pSWMb8TCrlertS1vb9QRQrQAcS66I1ESvwB5hJRpGCGZWww
+ioWyockW5ooMNYKJSYmpGwwQInuuZW5pGiUUIkXjgIgIVGwamrAQYeXBkORDACgQ
+K8KBwypCpcwTj9jFIrGI5CuSMLIYxBgaR8OyyM0gJqCcaABRS8aIaBY1FXF9TBUh
+6VA2iXBMiUgTq4pOEeIIcOnFKk/OqbBpN713Sf80X8Kchbk0FBCOwk7IDdFQmTgv
+cd1wxOfl4i4Ie8D5zPT/TeE37aAlBkRUVDAnYoeCIieB/G9kMtJGSawybDvMb3sI
+FWs6EMvTYRWCklCOVF2hnHEKqYos3TKpjMQcWMSwZJVomm4qolEFA2qaHCoGIogR
+MbHcA/6bIRRSLikWnCK5IHHnOUyq6rMiIb1HXHxCXK+eCd7TievTu/+D91SZ369L
+S2q/NLf/N2e/vfLaiZ77YmmZetb46i8T0/2Ze5e8vWBo0qGG+mMNH17e/Wzq4qrp
+9tHzJ/Nit4bt2LJ02Y+NBevPzpgdPFw30B0xAl+4vvGrjpcKM949mPxrJ8vOrdrR
+7n5dM/GjA77oLjt/w6booNLWrIxJ2pSKwRO7+hadPh1qfrJz1ctja83X64/f/Wnr
+zFM9UvAfvdr5+7Xbp2YPL7oY9a05tu/p+b3f1JfP2Daz7d7CRYmLt3w6ayO8Hovl
+NiX1y8h6/tzikmk5dZ0nrqb8kNYyoGZyStnQ+7XHruSsOnOn8c47dwO7opv214O8
+9nWj67JqnHG7H5ca+x7eNmft/XNbZ4HnEjuuNWxp0AuXFz817Jn1ea2FK1q2Swnu
+xqa1zXVzVtb2yFw4fcig1NT52e6ZlNTW+BN97L2bzSPDIqO1QEZ1oObU0Xt3H7nx
+1sNjfm7vvHww9VEeV54/Zed3761ZuhNUT4kmbYoOlD8pa534ajgvv8y+t6dgMvgt
+XhuTc2nvC8HkCVdX5wea/elFV3yzI5kFv+9Xox3JLTlpm59YeTjWtcd47FDHzWZQ
+nl7ZuPoL6Y1lH4ybJo/MTk5rKmqPHUicVDm6RdmWta7rwM0lxZ2Fu26Uj71QOd6Z
+PnzDNfjZ+mVtU7/P3xo/eILsFpxvK3xlZv3JoW2fj799Kzv3YxmOPD4kuJ//QpJu
+t505MmkqaPgT
+=lzT1
+-----END PGP MESSAGE-----
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/jsj
+
+==================================================================

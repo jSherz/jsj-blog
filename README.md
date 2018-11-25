@@ -13,11 +13,12 @@ Unless you're a big fan of raw Markdown, you can view the blog at [https://jsher
 To run a development server on port 4000, use:
 
 ```
-jekyll serve
+bundle install --path vendor/bundle
+bundle exec jekyll serve
 ```
 
 To build the assets ready to upload to your favourite CDN:
 
 ```
-jekyll build
+bundle exec jekyll build
 ```

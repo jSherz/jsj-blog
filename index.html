@@ -29,7 +29,7 @@ layout: default
                 <div class="post-read-more">
                     <a href="{{ post.url | prepend: site.baseurl }}">
                         <span>Read more</span>
-                        <i class="far fa-arrow-right"></i>
+                        {% include arrow-right.html %}
                     </a>
                 </div>
             </li>
@@ -46,7 +46,7 @@ layout: default
     <hr>
 
     <div id="open-source-container">
-        <h2>Open source</h2>
+        <h2>Open Source</h2>
 
         <ul>
             <li>
@@ -54,7 +54,7 @@ layout: default
                 <p>An example of using Lambda@Edge to authenticate requests to CloudFront.</p>
                 <a href="https://github.com/jSherz/lambda-at-edge-basic-auth">
                     <span>View on GitHub</span>
-                    <i class="far fa-arrow-right"></i>
+                    {% include arrow-right.html %}
                 </a>
             </li>
 
@@ -63,7 +63,7 @@ layout: default
                 <p>Secure a private static site with GSuite and Lambda@Edge.</p>
                 <a href="https://github.com/jSherz/docs-auth-lambda">
                     <span>View on GitHub</span>
-                    <i class="far fa-arrow-right"></i>
+                    {% include arrow-right.html %}
                 </a>
             </li>
 
@@ -72,7 +72,7 @@ layout: default
                 <p>The Leeds University Skydivers membership management system.</p>
                 <a href="https://github.com/jSherz/lsd-members">
                     <span>View on GitHub</span>
-                    <i class="far fa-arrow-right"></i>
+                    {% include arrow-right.html %}
                 </a>
             </li>
 
@@ -83,7 +83,7 @@ layout: default
                 </p>
                 <a href="https://github.com/jSherz/ros-tls">
                     <span>View on GitHub</span>
-                    <i class="far fa-arrow-right"></i>
+                    {% include arrow-right.html %}
                 </a>
             </li>
         </ul>

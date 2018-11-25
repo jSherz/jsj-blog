@@ -1,3 +1,7 @@
+svg {
+  width: 1em;
+}
+
 #site-header {
   background: $brand-color;
   box-shadow: #666 0 0 1rem;
@@ -16,12 +20,24 @@
     color: white;
     text-decoration: none;
 
+    svg path {
+      fill: white;
+    }
+
     &:hover {
       color: lighten($brand-color, 60%);
+
+      svg path {
+        fill: lighten($brand-color, 60%);
+      }
     }
 
     &:active {
       color: lighten($brand-color, 40%);
+
+      svg path {
+        fill: lighten($brand-color, 40%);
+      }
     }
   }
 
@@ -96,7 +112,7 @@
   }
 
   .post-meta {
-    color: #8891a3;
+    color: #4f5264;
     font-size: 0.8em;
   }
 
@@ -151,6 +167,20 @@
     text-decoration: none;
     font-weight: bold;
     font-size: 0.8rem;
+
+    &:hover {
+      svg path {
+        fill: lighten(#30508E, 30%);
+      }
+    }
+  }
+
+  svg {
+    width: 0.8em;
+
+    path {
+      fill: lighten(#30508E, 10%);
+    }
   }
 
   span {
@@ -211,6 +241,20 @@
         font-weight: bold;
         font-size: 0.8rem;
         margin-top: auto;
+
+        &:hover {
+          svg path {
+            fill: lighten(#30508E, 20%);
+          }
+        }
+      }
+
+      svg {
+        width: 0.8em;
+
+        path {
+          fill: #30508E;
+        }
       }
 
       span {
@@ -227,8 +271,16 @@ footer {
   a {
     color: #ccc;
 
+    svg path {
+      fill: white;
+    }
+
     &:hover {
       color: #666;
+
+      svg path {
+        fill: #666;
+      }
     }
   }
 
@@ -299,7 +351,7 @@ footer {
   }
 
   .post-meta {
-    color: #666;
+    color: #4f5264;
   }
 
   pre {
