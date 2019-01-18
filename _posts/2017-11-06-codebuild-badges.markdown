@@ -78,7 +78,8 @@ found [on GitHub](https://github.com/jSherz/codebuild-codepipeline-badges/releas
             "Version": "2012-10-17",
             "Statement": [
                 {
-                    "Effect": "AllowLoggingToCloudWatch",
+                    "Sid": "AllowLoggingToCloudWatch",
+                    "Effect": "Allow",
                     "Action": [
                         "logs:CreateLogGroup",
                         "logs:CreateLogStream",
