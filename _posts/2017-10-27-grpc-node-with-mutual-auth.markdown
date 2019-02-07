@@ -96,11 +96,13 @@ With SSL, the `server.bind` line becomes:
 ```javascript
 server.bind('0.0.0.0:50051', grpc.ServerCredentials.createSsl({
       rootCerts: fs.readFileSync(path.join(process.cwd, "server-certs", "Snazzy_Microservices.crt")),
-      keyCertPairs: {
-            privateKey: fs.readFileSync(path.join(process.cwd, "server-certs", "login.services.widgets.inc.key")),
-            certChain: fs.readFileSync(path.join(process.cwd, "server-certs", "login.services.widgets.inc.crt"))
+      keyCertPairs: [
+            {
+                  privateKey: fs.readFileSync(path.join(process.cwd, "server-certs", "login.services.widgets.inc.key")),
+                  certChain: fs.readFileSync(path.join(process.cwd, "server-certs", "login.services.widgets.inc.crt")),
+            },
       },
-      checkClientCertificate: true
+      checkClientCertificate: true,
 }));
 ```
 
@@ -143,10 +145,10 @@ Created out/client-1010101.crt from out/client-1010101.csr signed by out/Snazzy_
 As with the server, we must provide the certificate authority, client cert and
 private key:
 
-```
+```javascript
 if (process.env.NODE_ENV === "production") {
       client = new hello_proto.Greeter('localhost:50051', grpc.credentials.createSsl(
-      fs.readFileSync(path.join(process.cwd(), "client-certs", "Snazzy_Microservices.crt")),
+      [fs.readFileSync(path.join(process.cwd(), "client-certs", "Snazzy_Microservices.crt"))],
       fs.readFileSync(path.join(process.cwd(), "client-certs", "client-1010101.key")),
       fs.readFileSync(path.join(process.cwd(), "client-certs", "client-1010101.crt"))
       ));
