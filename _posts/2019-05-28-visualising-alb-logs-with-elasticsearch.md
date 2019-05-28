@@ -60,8 +60,7 @@ setting up the Lambda function.
 
 [AWS tutorial]: https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html#enable-access-logging
 [example Terraform configuration]: https://github.com/jSherz/alb-logs-parser
-[every 5 minutes]:
-https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html#access-log-file-format
+[every 5 minutes]: https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html#access-log-file-format
 
 ## The Lambda function
 
