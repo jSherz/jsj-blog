@@ -8,17 +8,17 @@ categories:
  - logs
 ---
 
-Logs are unhelpful at best and thoroughly misleading if not stored with the
-correct timestamp. A few seconds off is most likely good-enough, but if your log
-shipping fails for a period of time or you're trying to make sense of the order
-of a number of events that happen in quick succession, any inaccuracy is
+Logs are unhelpful at best and thoroughly misleading at worst if not stored with
+the correct timestamp. A few seconds off is most likely good-enough, but if your
+log shipping fails for a period of time or you're trying to make sense of the
+order of a number of events that happen in quick succession, any inaccuracy is
 incredibly frustrating.
 
 The unified AWS CloudWatch Agent that replaces the old method of shipping logs
 and metrics has a facility to read in a timestamp format and then parse your
-logs against it to extract the exact time. If the format doesn't match the log
-entry, it'll be uploaded with the current time, which may be a few seconds or
-many days wrong. An example timestamp format pattern is shown below:
+logs against it to extract the exact date & time. If the format doesn't match
+the log entry, it'll be uploaded with the current time, which may be a few
+seconds or many days wrong. An example timestamp format pattern is shown below:
 
 `/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json`
 ```json
@@ -72,10 +72,8 @@ that's a regular expression:
 ```
 
 From there, we can either test out the regex in a tool like [rubular] or see the
-layout with an example data to understand where we've gone wrong. In my example,
+layout with an example date to understand where we've gone wrong. In my example,
 I'd put dashes in the time portion of the timestamp rather than colons. Oops!
-
-Happy bug hunting!
 
 [AWS documentation]: https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Agent-Configuration-File-Details.html
 [rubular]: https://rubular.com/r/2hYXmtXMwTYMyP
