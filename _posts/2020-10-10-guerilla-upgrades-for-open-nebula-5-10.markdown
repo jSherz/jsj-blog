@@ -12,15 +12,15 @@ categories:
 I've used the [OpenNebula] project for several years to run virtual machines to
 experiment with different Linux distros and software. Unfortunately, they made
 the decision to continue releasing the main product as Open Source Software but
-restrict the database migration scripts to non-commercial use[\[1\]] [\[2\]] (or
+restrict the database migration scripts to non-commercial use\[[1]\] \[[2]\] (or
 require you to pay). This would be fine for my use case but requires submitting
 an application to be allowed to download the migration scripts, and no-one is
 going to be responding to my requests over the weekend when I'm looking to
 upgrade my cluster. Bring on the guerrilla upgrade!
 
 [OpenNebula]: https://www.opennebula.io
-[\[1\]]: https://forum.opennebula.io/t/towards-a-stronger-opennebula-community/8506
-[\[2\]]: http://docs.opennebula.io/5.12/intro_release_notes/upgrades/start_here.html#previous-steps
+[1]: https://forum.opennebula.io/t/towards-a-stronger-opennebula-community/8506
+[2]: http://docs.opennebula.io/5.12/intro_release_notes/upgrades/start_here.html#previous-steps
 
 ## The target database
 
