@@ -4,6 +4,12 @@ title: "Badges for AWS CodeBuild & CodePipeline with CloudWatch and Lambda"
 date: 2017-11-06 19:15:00 +0000
 categories: codebuild aws lambda cloudwatch nodejs readme
 ---
+
+**NB:** this approach is no longer required as CodeBuild now supports badges
+natively. See [Build badges sample with CodeBuild] in the AWS docs.
+
+[Build badges sample with CodeBuild]: https://docs.aws.amazon.com/codebuild/latest/userguide/sample-build-badges.html
+
 Most build systems have a built-in method of producing status badges or a
 plugin that will create them. With CodeBuild, we can use [CloudWatch Events](https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/WhatIsCloudWatchEvents.html)
 and a Lambda function to generate a badge when our build succeeds or fails,
