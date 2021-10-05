@@ -1,0 +1,62 @@
+name: 'Website'
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  deploy:
+    name: 'deploy'
+    runs-on: ubuntu-20.04
+
+    defaults:
+      run:
+        shell: bash
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Ruby
+        uses: eregon/use-ruby-action@477b21f02be01bcb8030d50f37cfec92bfa615b6
+        with:
+          ruby-version: 2.6.3
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: vendor/bundle
+          key: ${{ hashFiles('Gemfile.lock') }}
+
+      - name: Install dependencies
+        run: bundle install --path vendor/bundle
+
+      - name: Build
+        run: bundle exec jekyll build
+
+      - name: Authenticate with AWS
+        uses: aws-actions/configure-aws-credentials@a78fcb01f76c8c5c3b05ab82718a6f7919fc0269
+        with:
+          role-to-assume: arn:aws:iam::262312054792:role/jsherz-com-github-actions
+          aws-region: eu-west-1
+
+      - name: Sync files to S3
+        run: |
+          aws s3 sync \
+            --delete \
+            --metadata-directive REPLACE \
+            --cache-control "max-age=86400" \
+            _site/ s3://jsj-prod-jsherz-com-website/
+
+      - name: Clear cache
+        run: |
+          DISTRIBUTION_ID=$(aws cloudfront list-distributions | jq --raw-output '.DistributionList.Items | map(select((.Aliases.Quantity >= 1) and (.Aliases.Items | contains(["jsherz.com"])))) | .[0].Id')
+
+          export PAGER=""
+          aws cloudfront create-invalidation --distribution-id ${DISTRIBUTION_ID} --path '/*'
