@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Guerrilla upgrades for OpenNebula 5.10 to 5.12"
-date: 2020-05-17 18:13:00 +0100
+date: 2020-10-10 18:13:00 +0100
 categories:
   - OpenNebula
   - virtual machine
