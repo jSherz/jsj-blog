@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Using AWS CodeArtifact to host _just_ your private NPM packages"
-date: 2022-06-05 21:30:00 +0100
+date: 2022-05-06 21:30:00 +0100
 categories:
   - AWS
   - NPM
