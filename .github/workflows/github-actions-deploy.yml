@@ -23,19 +23,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Setup Ruby
-        uses: eregon/use-ruby-action@477b21f02be01bcb8030d50f37cfec92bfa615b6
+      - name: Setup Ruby and install dependencies
+        uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.6.3
-
-      - name: Cache dependencies
-        uses: actions/cache@v2
-        with:
-          path: vendor/bundle
-          key: ${{ hashFiles('Gemfile.lock') }}
-
-      - name: Install dependencies
-        run: bundle install --path vendor/bundle
+          bundler-cache: true
 
       - name: Build
         run: bundle exec jekyll build
