@@ -43,7 +43,7 @@ jobs:
       - name: Authenticate with AWS
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          role-to-assume: arn:aws:iam::262312054792:role/github-actions
+          role-to-assume: arn:aws:iam::262312054792:role/jsherz-com-github-actions
           aws-region: eu-west-1
 
       - name: Sync files to S3
