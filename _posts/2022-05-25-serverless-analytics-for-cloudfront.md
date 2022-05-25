@@ -228,9 +228,9 @@ And one for a job that looks at many months, perhaps including the current one:
           cat two-months-ago.log | goaccess -a -o html --log-format CLOUDFRONT - > two-months-ago.html && \
           cat one-month-ago.log | goaccess -a -o html --log-format CLOUDFRONT - > one-month-ago.html && \
           cat this-month.log | goaccess -a -o html --log-format CLOUDFRONT - > this-month.html && \
-          aws s3 cp two-months-ago.html s3://jsj-prod-jsherz-com-website/e6c649b9-e1c7-4ca4-ad41-efde9aeffdb2/ && \
-          aws s3 cp one-month-ago.html s3://jsj-prod-jsherz-com-website/e6c649b9-e1c7-4ca4-ad41-efde9aeffdb2/ && \
-          aws s3 cp this-month.html s3://jsj-prod-jsherz-com-website/e6c649b9-e1c7-4ca4-ad41-efde9aeffdb2/
+          aws s3 cp two-months-ago.html s3://my-destination/ && \
+          aws s3 cp one-month-ago.html s3://my-destination/ && \
+          aws s3 cp this-month.html s3://my-destination/
 ```
 
 If you're a DRY enthusiast, you might want to adapt the above into some lean
