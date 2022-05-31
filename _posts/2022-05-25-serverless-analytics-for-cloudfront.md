@@ -214,8 +214,8 @@ And one for a job that looks at many months, perhaps including the current one:
 ```yaml
       - name: Generate analytics
         run: |
-          TWO_MONTHS_AGO=$(date --date 'now - 2 months' "+%Y-%m") && \
-          ONE_MONTH_AGO=$(date --date 'now - 1 month' "+%Y-%m") && \
+          TWO_MONTHS_AGO=$(python3 -c 'from datetime import date, timedelta;print(((date.today().replace(day=1) - timedelta(days=1)).replace(day=1) - timedelta(days=1)).strftime("%Y-%m"))') && \
+          ONE_MONTH_AGO=$(python3 -c 'from datetime import date, timedelta;print((date.today().replace(day=1) - timedelta(days=1)).strftime("%Y-%m"))') && \
           THIS_MONTH=$(date "+%Y-%m") && \
           mkdir $TWO_MONTHS_AGO $ONE_MONTH_AGO $THIS_MONTH && \
           aws s3 sync --exclude "*" --include "ED1VZP9YJFXGU.$TWO_MONTHS_AGO*" --include "ED1VZP9YJFXGU.$ONE_MONTH_AGO*" --include "ED1VZP9YJFXGU.$THIS_MONTH*" --no-progress s3://jsj-prod-jsherz-com-website-logs . && \
@@ -238,13 +238,18 @@ bash functions or Python masterpiece, but I just wanted something that works
 simply and effectively for my use case.
 
 Let's break down what we're doing in these jobs. We start by using the `date`
-command to find out the current month, last month and two months ago. We format
-that value into a YYYY-MM string:
+command to find out the current month, or use Python to find last month and two
+months ago. We don't use `date` to calculate previous months as it doesn't
+support varying month lengths. We format the dates into YYYY-MM strings:
 
 ```bash
-date --date 'now - 2 months' "+%Y-%m"
+date "+%Y-%m"
 
-# outputs: 2022-03
+# outputs: 2022-05
+
+python3 -c 'from datetime import date, timedelta;print((date.today().replace(day=1) - timedelta(days=1)).strftime("%Y-%m"))'
+
+# outputs: 2022-04
 ```
 
 With that, we can make some directories for our log files:
