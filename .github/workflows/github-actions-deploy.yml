@@ -41,7 +41,6 @@ jobs:
       - name: Sync files to S3
         run: |
           aws s3 sync \
-            --delete \
             --metadata-directive REPLACE \
             --cache-control "max-age=86400" \
             _site/ s3://jsj-prod-jsherz-com-website/
