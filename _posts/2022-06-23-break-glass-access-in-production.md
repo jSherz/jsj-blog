@@ -34,7 +34,13 @@ access when required, while keeping the ability to develop and test the policy
 outside the scope of this application. We then wait an hour (or configurable
 amount of time) and revoke the access. After the access is gone, we wait for
 CloudTrail to have reported back everything that the user did and then e-mail a
-report to a user or delivery list. Here's what the report looks like:
+report to a user or delivery list. Here's what our Step Function execution will
+look like:
+
+![A graph showing a Step Function with stages "Grant Access", "Wait For
+Access To Expire", "Revoke Access", "Wait For CloudTrail" and "Report Access".](/assets/break-glass-access-in-production/sfn-graph.png)
+
+Here's what the access report e-mail looks like:
 
 ![An example e-mail report in which the user's email is shown, along with
 the date and time of their access. Two tables are below that information,
@@ -46,9 +52,6 @@ Functions can make native AWS API calls themselves, but we're sprinkling
 in some other logic and formatting that makes me lean towards some proper code.
 The combination of API Gateway, Step Functions, DynamoDB and Lambda gives us a 
 neat, serverless solution, perfect for a low traffic use case like this.
-
-![A graph showing a Step Function with stages "Grant Access", "Wait For 
-Access To Expire", "Revoke Access", "Wait For CloudTrail" and "Report Access".](/assets/break-glass-access-in-production/sfn-graph.png)
 
 View the app code and Terraform infrastructure [on GitHub].
 
