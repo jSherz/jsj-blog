@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Pre-signed URLs in AWS S3 - gotchas that got me"
-date: 2023-02-22 21:21:00 +0000
+date: 2023-02-23 22:26:00 +0000
 categories:
 - AWS
 - S3
@@ -135,3 +135,168 @@ for example by enabling CloudTrail data events, doesn't hurt either!
 
 See example three in the [GitHub] repo for a full working implementation of
 this.
+
+## Local development vs. deployed
+
+The issues discussed above are exasperated when you're comparing your local
+development environment and the deployed version. If you're still using access
+keys for local development and your service uses a role, I'd highly recommend
+modifying the role to allow you to assume it while you're in development and
+then assuming it for your testing. That'll give you a much more realistic
+setup, and make it far easier to compare pre-signed URLs if you ever get a
+signature error in one place but not in another.
+
+```bash
+# 1. Modify the role's trust policy to allow you to assume it
+
+# 2. Assume the role
+aws sts assume-role --role-arn ... --role-session-name local-testing
+
+# 3. Use those new credentials
+export AWS_ACCESS_KEY_ID=...
+export AWS_SECRET_ACCESS_KEY=...
+export AWS_SESSION_TOKEN=...
+
+# 4. Launch the service you're testing
+npm run start
+```
+
+## Error messages when exposing the link to your users
+
+Let's say you want to produce a download link to a report. One option is to
+render a page that has the pre-signed link, like so:
+
+```html
+<a href="https://my-cool-bucket.s3.eu-west-1.amazonaws.com/....">Download</a>
+```
+
+If your user copies the link and either bookmarks it or shares it, it's likely
+that it won't work when they come back to use it again. AWS's error message
+isn't very end-user friendly, nor is it branded like your application.
+
+### Workarounds
+
+An alternative option is to present the user a link that will redirect them to
+S3 when used:
+
+```html
+<a href="https://download.example.com/files/report.pdf">Download</a>
+```
+
+When they navigate to the link you'll authenticate them, generate the
+pre-signed URL and use the `Location` header to send them to S3. If they
+bookmark or share the link, they'll be re-authenticated and get a fresh
+pre-signed URL at the time of use.
+
+## Error messages when your client application uses the URL
+
+I'd also suggest building in robust error handling to your client applications
+(e.g. a Single Page App) when they're making use of pre-signed URLs. If you
+generate the link when the user first navigates to the page, it may expire
+before they've completed the operation. For example, they may open another
+window to find the file(s) that they want to upload and then pop out for lunch.
+When they try and use your webapp to upload their file(s), it'll error as the
+pre-signed URL has expired.
+
+### Workarounds
+
+Generate the pre-signed URL just before it's about to be used. For example,
+you might respond to the on change event for the file input that the user uses
+to select their file(s). At that point, you'll show a loading spinner, make the
+call to your API for the pre-signed URL and then perform the upload.
+
+## Whitespace \[in environment variables\]
+
+A 'fun quirk' of the pre-signing process is that it'll happily sign URLs for
+you that will never be valid. If you're unlucky enough to include any
+whitespace around your access keys, you'll still get a pre-signed URL, but it
+just won't work. This _should_ be a pretty rare problem given that you're
+hopefully using IAM roles and the automatic provisioning of credentials, e.g.
+with an EC2 Instance Profile, a Fargate task role, a Kubernetes plugin in EKS
+or Identity Centre (née SSO) on your local machine.
+
+I have a toy Kubernetes cluster that runs outside of AWS and uses access keys
+over another solution like [IAM Roles Anywhere] out of pure ease / simplicity.
+I recently base64 encoded the access keys I was going to apply to my service
+like this:
+
+```bash
+echo AKIAmykey | base64
+```
+
+The seasoned players will immediately spot what I've done. `echo` adds a
+newline by default, and thus my access keys had a `\n` at the end. Queue a
+solid hour of head scratching wondering why the damn thing wouldn't work when
+the same keys were fine on my laptop.
+
+[IAM Roles Anywhere]: https://docs.aws.amazon.com/rolesanywhere/latest/userguide/introduction.html
+
+### Workarounds
+
+Avoid the use of access keys. If you have to use them, take care when setting
+environment variables to ensure you don't have any extra characters hanging
+around.
+
+## Not reading the full error message
+
+This one might sound a little silly, but hear me out. The error returned when
+a signature mismatch happens is very descriptive. It lists out exactly what AWS
+signed when it tried to check the signature was valid. The problem comes if
+your error handling or error reporting system or logger or whatever else
+doesn't let you see the full thing (it's returned as a response body). If
+that's the case, you'll be chasing your tail trying to work out what's wrong.
+
+### Workarounds
+
+Log / report / inspect the full response body returned by AWS if you get a
+signature mismatch error.
+
+## Missing headers that need to be signed
+
+Here's an example of client code that ensures the object you're uploading is
+encrypted. We can always enable default bucket encryption, but you might also
+be tempted to enforce encryption using a bucket policy that denies any requests
+not made with the encryption header set. If you're using that setup, you'll
+want to have clients upload their file(s) as follows:
+
+```typescript
+// We're using the axios HTTP client for a quick example
+await axios.put(
+  // Here's the URL, returned by an API call we've just made
+  presignedUrlResponse.data.url,
+  // We're using a FormData object to upload the file on an SPA
+  formData.get("file"),
+  {
+    /*
+      Here we use the default server-side encryption - see the link below for
+      the Customer Managed Key version:
+
+      https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingKMSEncryption.html
+     */
+    headers: {
+      "x-amz-server-side-encryption": "AES256",
+    },
+  }
+);
+```
+
+### Workarounds
+
+When we sign the URL on the server, we must ensure that the relevant additional
+headers are signed too:
+
+```typescript
+const command = new PutObjectCommand({
+  Bucket: "my-test-bucket",
+  Key: `${customerId}/${uploadId}.xlsx`,
+  /*
+    We don't explicitly spell out the header here, but this parameter will be
+    translated into that header getting signed when the URL is generated.
+   */
+  ServerSideEncryption: ServerSideEncryption.AES256,
+});
+
+const url = await getSignedUrl(s3Client, command, {
+  expiresIn: 60,
+});
+```
