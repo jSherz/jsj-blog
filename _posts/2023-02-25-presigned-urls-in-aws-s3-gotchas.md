@@ -1,11 +1,13 @@
 ---
 layout: post
 title: "Pre-signed URLs in AWS S3 - gotchas that got me"
-date: 2023-02-23 22:26:00 +0000
+date: 2023-02-25 16:39:00 +0000
 categories:
+
 - AWS
 - S3
 - "Simple Storage Service"
+
 ---
 
 [Pre-signed URLs] are a convenient way of us having our users directly download
@@ -37,39 +39,81 @@ Let's assume a role with a session expiry time at the minimum, fifteen minutes:
 
 ```bash
 aws sts assume-role \
-  --role-arn arn:aws:iam... \
+  --role-arn arn:aws:iam::123456789012:role/pre-signed-urls-expiry-time-cli-testing \
   --role-session-name gotchas \
   --duration-seconds 900
 ```
 
+If you're following along with the [examples project on GitHub], the role ARN
+is the CloudFormation output "expirytimeclitestingroleoutput".
+
+[examples project on GitHub]: https://github.com/jSherz/pre-signed-urls-in-s3-gotchas
+
 ```json
-"todo"
+{
+  "Credentials": {
+    "AccessKeyId": "ASIA________________",
+    "SecretAccessKey": "_______________________________________",
+    "SessionToken": "...",
+    "Expiration": "2023-02-25T14:31:38+00:00"
+  },
+  "AssumedRoleUser": {
+    "AssumedRoleId": "...",
+    "Arn": "..."
+  }
+}
 ```
 
 Let's then export those credentials into our environment:
 
 ```
-export AWS_ACCESS_KEY_ID=
-export AWS_SECRET_ACCESS_KEY=
-export AWS_SESSION_TOKEN=
+export AWS_ACCESS_KEY_ID=...
+export AWS_SECRET_ACCESS_KEY=...
+export AWS_SESSION_TOKEN=...
 ```
 
 Finally, let's run the following SDK example:
 
-```typescript
-import { S3Client } from "@aws-sdk/client-s3";
-
-const client = new S3Client({});
-
-const result = await client.presignedUrl({
-    Expires: 3600, // one hour?
-});
-
-console.log("Here is your URL:", result.URL)
+```bash
+yarn ts-node src/example1.ts
 ```
 
-```bash
-ts-node example1.ts
+```typescript
+import {
+    CloudFormationClient,
+    DescribeStacksCommand,
+} from "@aws-sdk/client-cloudformation";
+import {GetObjectCommand, S3Client} from "@aws-sdk/client-s3";
+import {getSignedUrl} from "@aws-sdk/s3-request-presigner";
+
+(async () => {
+    const s3Client = new S3Client({});
+
+    const cfnClient = new CloudFormationClient({});
+
+    const stacks = await cfnClient.send(
+        new DescribeStacksCommand({
+            StackName: "presigned-urls",
+        }),
+    );
+
+    if (!stacks.Stacks || !stacks.Stacks[0] || !stacks.Stacks[0].Outputs) {
+        throw new Error("Could not find stack - have you deployed this project?");
+    }
+
+    const command = new GetObjectCommand({
+        Bucket: stacks.Stacks[0].Outputs.find(
+            (output) => output.OutputKey === "bucketoutput",
+        )!.OutputValue!,
+        Key: "example1.txt",
+    });
+
+    const url = await getSignedUrl(s3Client, command, {
+        expiresIn: 3600, // one hour
+    });
+
+    console.log("Here is your URL:", url);
+})().catch(console.error);
 ```
 
 Wait fifteen minutes after running this example and then try your pre-signed
@@ -77,22 +121,41 @@ URL. What do you expect to happen? Should it be valid because our expiry time
 is one hour from now? I certainly expected that to be the case, but it
 expires in a measly fifteen minutes.
 
-**NB:** you can find the full source code for any of these examples on my 
-[GitHub].
-
-[GitHub]: https://github.com/jSherz/presigned-urls-in-s3-gotchas
-
 Have a look at the roles that are used by your services in the AWS console.
 What is the maximum role session time? If you create a pre-signed URL with one
 of these roles, you'll get _at most_ that amount of time. We can actually
 see how much time is remaining on our current session. The following SDK
 example is run as part of example two in the above GitHub project. It spits out
-the remaining role session time every minute in an ECS Fargate task.
+the remaining role session time every minute. It's best run on an EC2 instance
+unless you're using AWS Identity Centre locally.
+
+```bash
+yarn ts-node src/example2.ts
+```
 
 ```typescript
-setTimeout(() => {
-    // Check how long is left in the session
-    // Spit it out to the logs
+import { S3Client } from "@aws-sdk/client-s3";
+
+const s3Client = new S3Client({});
+
+setInterval(async () => {
+    try {
+        const currentCredentials = await s3Client.config.credentials();
+
+        const now = new Date();
+
+        if (currentCredentials.expiration) {
+            const remainingSeconds =
+                (currentCredentials.expiration.getTime() - now.getTime()) / 1000;
+
+            console.log(`Your session has ${remainingSeconds} seconds left.`);
+        } else {
+            console.log("Could not detect how many seconds left in your session.");
+        }
+    } catch (err) {
+        console.error("Failed to check credential expiry", err);
+        process.exit(1);
+    }
 }, 60 * 1000);
 ```
 
@@ -100,41 +163,105 @@ This example illustrates that you don't get the role's maximum session time for
 your signed links, you get the maximum of your role's remaining session time
 and the expiry time you pass to the SDK.
 
-### Workarounds
+If you leave the above example running, you'll see that AWS' SDKs automatically
+refresh the credentials when required.
 
-If your desired expiry time fits within the maximum role session time, you
-can ask the SDK to request a role session that lasts longer than the default of
-one hour. We must also explicitly ask the SDK to refresh its credentials if
-we have _less_ time remaining in our session than we want to grant to the user
-of the pre-signed URL. The method will vary slightly depending on the source of
-your credentials.
-
-The absolute maximum time we can have is twelve hours. See the
-[documentation for STS AssumeRole].
-
-[documentation for STS AssumeRole]: https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html
-
-```typescript
-// First we ask for more time
-creds.fromFargate(2000000);
-
-// When we come to generate the presigned URL, we check there is sufficient 
-// time left
-if (remainingSessionTime.isSmol()) {
-    client.refresh();
-}
+```
+Your session has 3598.468 seconds left.
+Your session has 3538.895 seconds left.
+...
+Your session has 478.635 seconds left.
+Your session has 418.631 seconds left.
+Your session has 358.629 seconds left.
+Your session has 3598.262 seconds left.
 ```
 
-If your desired expiry time is above twelve hours, the remaining option is an
-IAM user. You might choose to lock this user down to only one IAM action (e.g.
-`s3:GetObject`) and then have the access keys generated and saved into Secrets
-Manager in a fully automated fashion that avoids and humans handling them.
-Secrets Manager's rotation feature and a custom Lambda function achieves this
-and gives you frequent, automated, rotation. Auditing of the S3 bucket itself,
-for example by enabling CloudTrail data events, doesn't hurt either!
+### Workarounds
 
-See example three in the [GitHub] repo for a full working implementation of
-this.
+The role session duration depends on the service you've assigned the role to.
+For example, an EC2 instance profile can have a session that lasts up to six
+hours. See "[Using presigned URLs]" for more information.
+
+[Using presigned URLs]: https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-presigned-url.html
+
+If your desired expiry time fits within that limit, we just have to ensure
+that we refresh the credentials when we detect there isn't enough time left in
+the session. Anything longer than that requires the use of an IAM user. You
+might choose to lock this user down to only one IAM action (e.g.
+`s3:GetObject`) and then have the access keys generated and saved into
+Secrets Manager in a fully automated fashion that avoids and humans handling
+them. Secrets Manager's rotation feature and a custom Lambda function
+achieves this and gives you frequent, automated, rotation. Auditing of the
+S3 bucket itself, for example by enabling CloudTrail data events, doesn't
+hurt either!
+
+**Why can't we use a larger session duration?**
+
+At the time of writing, the instance metadata APIs (including for
+containerized workloads) don't support being asked for a longer session
+duration. See the AWS documentation page linked above for the latest values.
+
+**Why can't we use a call to the STS AssumeRole API with a longer duration?**
+
+When a role assumes another role, it has a maximum session duration of an hour.
+See "[Can I increase the IAM role chaining session duration limit?]" for more
+information.
+
+[Can I increase the IAM role chaining session duration limit?]: https://aws.amazon.com/premiumsupport/knowledge-center/iam-role-chaining-limit/
+
+Here's an example that demonstrates force-refreshing. It works with a local
+session powered by AWS Identity Centre.
+
+```bash
+yarn ts-node src/example3.ts
+```
+
+```typescript
+import { S3Client } from "@aws-sdk/client-s3";
+
+const s3Client = new S3Client({});
+
+setInterval(async () => {
+    try {
+        const currentCredentials = await s3Client.config.credentials();
+
+        const now = new Date();
+
+        if (currentCredentials.expiration) {
+            const remainingSeconds =
+                (currentCredentials.expiration.getTime() - now.getTime()) / 1000;
+
+            console.log(`Your session has ${remainingSeconds} seconds left.`);
+
+            /*
+              Many credential providers default to credentials valid for one hour, so
+              purposely refresh this early to watch it happen.
+             */
+            if (remainingSeconds < 3570) {
+                console.log("Forcing credential refresh.");
+                const updatedCredentials = await s3Client.config.credentials({
+                    forceRefresh: true,
+                });
+
+                const updatedNow = new Date();
+
+                const updatedRemainingSeconds =
+                    (updatedCredentials.expiration!.getTime() - updatedNow.getTime()) /
+                    1000;
+
+                console.log(
+                    `Your refreshed session has ${updatedRemainingSeconds} seconds left.`,
+                );
+            }
+        } else {
+            throw new Error("This example must be run with AWS Identity Centre.");
+        }
+    } catch (err) {
+        console.error("Failed to check credential expiry", err);
+        process.exit(1);
+    }
+}, 1000);
+```
 
 ## Local development vs. deployed
 
@@ -262,21 +389,21 @@ want to have clients upload their file(s) as follows:
 ```typescript
 // We're using the axios HTTP client for a quick example
 await axios.put(
-  // Here's the URL, returned by an API call we've just made
-  presignedUrlResponse.data.url,
-  // We're using a FormData object to upload the file on an SPA
-  formData.get("file"),
-  {
-    /*
-      Here we use the default server-side encryption - see the link below for
-      the Customer Managed Key version:
-
-      https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingKMSEncryption.html
-     */
-    headers: {
-      "x-amz-server-side-encryption": "AES256",
-    },
-  }
+    // Here's the URL, returned by an API call we've just made
+    presignedUrlResponse.data.url,
+    // We're using a FormData object to upload the file on an SPA
+    formData.get("file"),
+    {
+        /*
+          Here we use the default server-side encryption - see the link below for
+          the Customer Managed Key version:
+    
+          https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingKMSEncryption.html
+         */
+        headers: {
+            "x-amz-server-side-encryption": "AES256",
+        },
+    }
 );
 ```
 
@@ -287,16 +414,16 @@ headers are signed too:
 
 ```typescript
 const command = new PutObjectCommand({
-  Bucket: "my-test-bucket",
-  Key: `${customerId}/${uploadId}.xlsx`,
-  /*
-    We don't explicitly spell out the header here, but this parameter will be
-    translated into that header getting signed when the URL is generated.
-   */
-  ServerSideEncryption: ServerSideEncryption.AES256,
+    Bucket: "my-test-bucket",
+    Key: `${customerId}/${uploadId}.xlsx`,
+    /*
+      We don't explicitly spell out the header here, but this parameter will be
+      translated into that header getting signed when the URL is generated.
+     */
+    ServerSideEncryption: ServerSideEncryption.AES256,
 });
 
 const url = await getSignedUrl(s3Client, command, {
-  expiresIn: 60,
+    expiresIn: 60,
 });
 ```
