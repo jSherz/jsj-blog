@@ -427,3 +427,10 @@ const url = await getSignedUrl(s3Client, command, {
     expiresIn: 60,
 });
 ```
+
+## That's it for now!
+
+Good luck with S3 pre-signing. For all of the above gotchas, it's still an
+awesome way to enable temporary access. I'd rather troubleshoot my way through
+the above than deal with memory challenges as users upload their files to a
+service.
