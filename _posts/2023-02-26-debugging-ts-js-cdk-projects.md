@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Debugging TypeScript/JavScript CDK projects - a few tips and tricks"
+title: "Debugging TypeScript/JavaScript CDK projects - a few tips and tricks"
 date: 2023-02-26 16:14:00 +0000
 categories:
 
