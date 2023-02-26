@@ -28,9 +28,9 @@ while you're developing it.
 If you've not yet tried the debugger support in your editor, it's worth both
 trying to have it launch the application and also exploring the options to
 attach to an existing, running, process. I reckon I'm about 3-5x faster
-debugging with a proper debugger rather than printing console output to the
-screen, so it's something I teach any Node developer I work with whose not used
-it before. An additional gotcha is that the stringification of values can hide
+debugging with a proper debugger over printing console output to the screen,
+so it's something I teach any Node developer I work with whose not used it
+before. An additional gotcha is that the stringification of values can hide
 useful information if you use the console vs being able to inspect the full
 object or class in a debugger.
 
@@ -320,7 +320,7 @@ doesn't exist. The filters parameter of [the DescribeImages API] can be a bit
 of a pain to get right, so perhaps we want to inspect exactly what's being
 passed to the AWS SDK by CDK.
 
-[the DescribeImagesAPI]: https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeImages.html
+[the DescribeImages API]: https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeImages.html
 
 ```typescript
 const ami = new aws_ec2.LookupMachineImage({
@@ -381,15 +381,15 @@ Becomes:
 if(images.length===0){debugger;throw new Error("No AMI found that matched the search criteria")}
 ```
 
-This then begins the challenge of having your debugger/editor stop in the file
-and not crash. I hate to say it, but unless you're sitting on a machine with
-bags of memory, I'd replace that `debugger` statement with a `console.log` and
-try to spend as little time debugging in aws-cdk as possible. How hypocritical!
+Then begins the challenge of having your debugger/editor stop in the file and
+not crash. I hate to say it, but unless you're sitting on a machine with bags
+of memory, I'd replace that `debugger` statement with a `console.log` and try
+to spend as little time debugging in aws-cdk as possible. How hypocritical!
 
 ## Conclusion
 
 As with many other areas of JavaScript/TypeScript development, debugging in CDK
 projects is still harder than it should be. I hope these tips help! If you're a
-bit of a debugging-guru and a colleague asks for help with their whopping stack
+bit of a debugging guru and a colleague asks for help with their whopping stack
 of console.logs, share the love and show them why a "proper" debugger can
 save them a whole heap of time.
