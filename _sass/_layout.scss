@@ -342,7 +342,7 @@ footer {
   margin: 1rem auto;
   background: white;
   box-shadow: #ccc 0 0 0.5rem;
-  padding: 0.5rem;
+  padding: 1rem;
 }
 
 .post {
@@ -366,4 +366,25 @@ footer {
 #archive {
   max-width: $content-width;
   margin: 1rem auto;
+}
+
+table {
+  display: inline-block;
+  border-collapse: collapse;
+  overflow: auto;
+  table-layout: fixed;
+  max-width: 62rem;
+}
+
+th, td {
+  border: solid 0.1rem #999;
+  padding: 0.5rem;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+th {
+  background-color: #ddd;
 }
