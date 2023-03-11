@@ -10,15 +10,21 @@ Unless you're a big fan of raw Markdown, you can view the blog at [https://jsher
 
 ## Developing and publishing
 
+Install rbenv and then Ruby version 3.1.2
+
+```bash
+rbenv install 3.1.2
+```
+
 To run a development server on port 4000, use:
 
-```
-bundle install --path vendor/bundle
+```bash
+bundle install
 bundle exec jekyll serve
 ```
 
 To build the assets ready to upload to your favourite CDN:
 
-```
+```bash
 bundle exec jekyll build
 ```

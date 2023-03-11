@@ -3,6 +3,7 @@
 ---
 
 @charset "utf-8";
+@use "sass:math";
 
 $base-em-size: 16;
 
@@ -14,7 +15,7 @@ $small-font-size: $base-font-size * 0.875;
 $base-line-height: 1.5;
 
 @function em($pixels) {
-  @return #{$pixels / $base-em-size}em;
+  @return #{math.div($pixels, $base-em-size)}em;
 }
 
 $spacing-unit: 30px;
