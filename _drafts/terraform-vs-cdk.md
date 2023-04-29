@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Terraform vs. CDK"
-date: 2023-04-24 15:24:00 +0100
+date: 2023-04-29 10:45:00 +0100
 categories:
   - AWS
   - CDK
@@ -92,15 +92,15 @@ If your team is already well versed in one of the languages supported by CDK,
 it's very easy for them to hit the ground running creating AWS resources. Their
 mental model of OO techniques will let them connect resources together and have
 the permissions automatically configured on each end - it almost feels like
-magic, and using managed services like EventBridge, Lambda, SQS, SNS is a real
+magic. Using managed services like EventBridge, Lambda, SQS, and SNS is a real
 treat. You don't have to understand all the components - it "just works".
 
 Lambda functions and container images coexist effortlessly in a repo that
 contains the infrastructure to deploy them. I think this is a fantastic dev
-experience, and is why I created [a Terraform module] for doing this with
+experience, and is why I created [a Terraform provider] for doing this with
 NodeJS-based Lambdas.
 
-[a Terraform module]: https://jsherz.com/terraform/lambda/2023/04/22/lambda-packaging-in-terraform.html
+[a Terraform provider]: https://jsherz.com/terraform/lambda/2023/04/22/lambda-packaging-in-terraform.html
 
 CloudFormation and Terraform are in a constant race to keep up with all the
 new and changing resources in AWS. If you're ever missing a resource you need,
@@ -146,7 +146,7 @@ state, whatever happens to the resources.
 
 There are few things I find more satisfying than performing a large refactoring
 in IaC without any disruptions or changes to live resources. In Terraform, you
-can move whole groups of resources, change their local name (akin to an ID in
+can move whole groups of resources, change their logical name (akin to an ID in
 CDK) and not have any impact on what's live in AWS. Terraform state
 modification can go very wrong, just like a git rebase or similarly powerful
 tools, but to an expert user it's invaluable. In CDK, resources are named based
@@ -155,7 +155,7 @@ disruptive. AWS themselves recommend that you rely heavily on tags and keep
 CDK's default resource naming, but support for finding resources in the AWS
 console by tags is very hit-and-miss. Where do you inspect the state of
 resources in an incident? In the console. CloudFormation does support importing
-existing resources into its management, but only ~60% of the resources it has
+existing resources into its management, but only ~60% of the ones it has
 available. You must also get the configuration exactly matching first -
 Terraform on the other hand will just update it to be in the state you desire.
 
@@ -164,55 +164,139 @@ Terraform on the other hand will just update it to be in the state you desire.
 A very contentious point in the choice of Terraform over other tools is the
 Domain Specific Language (DSL) that it uses: Hashicorp Configuration Language
 (HCL). My take? It makes you do some weird things, but in exchange you avoid
-much of the complexity of how code could - but shouldn't - be structured. Logic
-is commonplace in CDK apps, and in my view that mandates tests of the code
-itself. I don't feel this way in Terraform, I'd just focus on testing that the
-actual resources are built correctly. I have fairly strong opinions about the
-use of frameworks for application development: I believe you either use a
-framework, or end up writing your own. The difference is that a pre-made
-framework has documentation, tutorials, and (some) consistency between projects
-that use it. With CDK, you're on your own building infrastructure in a fully
-fledged OO programming language. If you're from a development background, that
-may feel like an advantage. For me, the constraints of HCL push you toward
-simplicity.
+much of the complexity of how code could - but shouldn't - be structured. You
+don't have to write tests for how Postgres handles your SQL - you just write
+tests on the result - and I believe that this is the same with the choice of
+an imperative/OO language vs. a declarative one for IaC.
+
+I have fairly strong opinions about the use of frameworks for application
+development: I believe you either use a framework, or end up writing your own.
+The difference is that a pre-made framework has documentation, tutorials, and
+(some) consistency between projects that use it. With CDK, you're on your own
+building infrastructure in a fully fledged OO programming language. If you're
+from a development background, that may feel like an advantage. For me, the
+constraints of HCL push you toward simplicity and a consistent structure.
 
 With the above said, you might be desperate to tell me that you've got
 brilliantly complex IaC solutions that cannot be expressed with the logic
 available in HCL. My suggestion? Generate a Terraform variables file that acts
-as a faux projection of the infrastructure you want to make and do so in a
+as a faux projection of the infrastructure you want to make, and do so in a
 programming language of your choice.
+
+How many times have I had to do this in the last ~5 years of building
+infrastructure as a day job? Twice.
 
 ### Referencing existing infrastructure
 
-TBC
+Terraform has "data sources" that allow you to reference existing pieces of
+infrastructure. CloudFormation supports looking up values from SSM parameters
+and Secrets Manager secrets, and also CDK has lookups for a limited number of
+items:
 
-* Querying state file and looking for resource in .terraform folder is quick and easy.
-* Resources created by constructs (e.g. log groups), not cleaned up properly. Plugging things together isn't simple as you have to understand these things created and get them made properly.
-* Quality of diffs in CDK is abysmal.
-* Quick note about Serverless Application Model and Serverless Framework - both still use CFN. Same double abstraction, but SAM is at least closer.
-* CloudFormation builds some resources in two API calls - prevents SCPs being used with tags set. Compare to Terraform for accurate representation.
-* Does CFN indicate when resource will be replaced or updated?
+* Amazon Machine Images (AMIs)
+* Availability Zones (AZs)
+* Route53 Hosted Zone
+* SSM Parameters
+* VPCs
+* VPC Endpoint Service AZ
+* Load balancers
+* Load balancer listeners
+* Security groups
+* KMS keys
+* "plugin"
+
+At the time of writing, Terraform has about 487 data sources. Not too shabby
+compared to the above list of eleven.
+
+When CDK queries AWS for these items, it caches the response in the file
+`cdk.context.json`. If the underlying resource changes, e.g. if an update was
+made to the VPC you were referencing, it's not updated in that context file,
+and you'll never know something is now different. You as the user would have to
+know that it had changed, manually clear the context entry, re-run a synth and
+then commit the updated file.
+
+As Platform Engineers, we often lookup values like the current organization ID
+and account IDs to use in resource policies. These have to be provided to CDK,
+likely with a script made in a programming language of your choice that
+populates context values. We can additionally use multiple Terraform providers
+to query existing infrastructure in a variety of cloud providers, SaaS tools
+and even different AWS accounts or regions.
+
+There is light at the end of the tunnel for CDK: the final "plugin" CDK context
+provider. This is [marked Amazon-internal only] at the time of writing, but
+I've used it successfully with a client to find data like the aforementioned
+organization ID, or the IDs of organizational units.
+
+[marked Amazon-internal only]: https://github.com/aws/aws-cdk/blob/c81d115955dbb27ce873ed7c9d71cc0dc8eacf99/packages/aws-cdk/lib/api/plugin/plugin.ts#L108
+
+### Oh, for the love of tags!
+
+AWS' tag policies support a woefully small number of resources compared to the
+total number available. The official advice is to combine them with SCPs that
+block the creation or modification of infrastructure that doesn't include tags.
+This is a complete non-starter in CDK/CloudFormation - it tags the resources
+with a separate API call after they've been created.
+
+Many CloudFormation resources are also missing the property to set tags, and
+thus you're back to writing custom constructs with AwsCustomResource.
 
 ## What would I change to improve CDK?
 
-* Ditch CloudFormation.
-* Constructs do not include best practices, especially when they’re for your 
-  org - must make Terraform modules.
-* Plugin API: Lack of common lookups is painful, including by tag.
+Here's a moonshot idea for you: CDK should ditch CloudFormation. I mean it! If
+AWS wants to have CDK as its prized and primary IaC tool, it needs to rid
+itself from the poor developer experience of CloudFormation. Bin the quirks.
+Stop waiting for Godot and start building out real support for all AWS
+resources. The third parties have managed it - why can't AWS?
+
+The included L2/L3 CDK constructs do not encompass many of AWS' best practices
+by default. If AWS says you should have a public access block on an S3 bucket,
+CDK should have it on and force you to turn it off if you _really_ need to.
+[cdk-nag] should be vacuumed up and consumed into the main project and be on
+for all users. Why not make it the premier, shift-left, belt and braces tool
+that makes it hard to get infrastructure wrong?
+
+[cdk-nag]: https://github.com/cdklabs/cdk-nag
+
+Finally, I'm keeping a close eye on how the plugin system goes. I'd really love
+to see an easy way to adopt many plugins, each which supply resource lookups.
+Perhaps an entry in the `cdk.json` file could have a list of them as NPM
+packages? Pretty please?
 
 ## What would I change to improve Terraform?
 
-* Commercial support with SLAs around resource updates.
-* Bounties on new resources / bug fixes.
+I'm too far detached from the experiences of a new user to comment on
+Terraform's state management here. Terraform Cloud is a delightful service but
+the pricing for concurrent runs is abhorrent. Why not make it work like all the
+other CI tools and just bill by the minute? If that were the case, new users
+could have a much smoother landing into Terraform by starting with it, and
+sticking with it as they work in a team.
+
+I'd happily pay for bug bounties to have new resources added, or updates made.
+Many companies use Terraform without paying a penny toward its development, and
+perhaps there's a market for a commercial support plan that gives priority to
+your requests in exchange for funding?
 
 ## What about cdktf? Is that the best of both worlds?
 
-* No.
-* Same abstraction overhead as CloudFormation + CDK.
-* Lacks the OO DX of normal CDK.
-* Not interchangeable with CDK - one way door.
+Any tool like Serverless Framework, cdktf or CDK has a double layer of
+abstraction: you must understand how the top-level tool's configuration is
+translated to the lower-level tool's configuration, and then how that appears
+as AWS resources. When I tried it, cdktf had much of the OO paradigm magic
+missing - perhaps this will change over time, and it will appear more like the
+main CDK project. It's also not possible to swap backends between
+CloudFormation and Terraform - I think this is a real shame as it makes either
+choice more of a one-way door.
 
 ## What tool will I use going forward?
 
-* Terraform.
-  * With my Lambda provider.
+I'm sure I don't need to spell it out, but I'll be using Terraform for all of
+my projects going forward, and recommending that clients I work with do the
+same. Learning CDK was a very valuable experience in and of itself, and I think
+all people writing Terraform day-to-day should give it a good go to compare and
+discover improvements they could make to their own methods or approach.
+
+Without CDK, I'd have never written [a Terraform provider] to achieve the same
+developer experience collocating Lambda code in a Terraform project. The OO
+paradigms and permission magic has really pushed me to reconsider how I design
+Terraform modules and the experience that I'm providing with them. It's set the
+bar very high - and now I have to see if I can have my cake.tf and eat it.
