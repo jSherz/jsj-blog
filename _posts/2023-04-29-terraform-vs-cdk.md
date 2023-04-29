@@ -154,10 +154,15 @@ on their location in the constructs you have, and thus any refactoring is
 disruptive. AWS themselves recommend that you rely heavily on tags and keep
 CDK's default resource naming, but support for finding resources in the AWS
 console by tags is very hit-and-miss. Where do you inspect the state of
-resources in an incident? In the console. CloudFormation does support importing
-existing resources into its management, but only ~60% of the ones it has
-available. You must also get the configuration exactly matching first -
-Terraform on the other hand will just update it to be in the state you desire.
+resources in an incident? In the console.
+
+CloudFormation does support importing existing resources into its management,
+but only ~60% of the ones it has available. You must also get the
+configuration exactly matching first - Terraform on the other hand will just
+update it to be in the state you desire. The `cdk import` command is a great
+help in orchestrating this, but it's still in the early stages of development,
+and I've hit some bugs where it wouldn't accept the same input that
+CloudFormation requires for an equivalent import.
 
 ### KISS
 
