@@ -77,6 +77,7 @@ in our build pipeline. This is a big help, but there's some effort required to
 keep the rules of those tools in-sync with the Config rules to our AWS account.
 
 [terraform-compliance]: https://terraform-compliance.com/
+
 [cdk-nag]: https://github.com/cdklabs/cdk-nag
 
 ### Feedback in the Pull Request
@@ -139,10 +140,146 @@ Here's what the architecture that powers that looks like:
 
 <img alt="A diagram showing AWS Config sending an EventBridge event to the default event bus when a resource is non compliant. A Lambda function uses a rule to receive the event and add a comment to a GitHub Pull Request. The Lambda function uses Secrets Manager to retrieve an auth token and Config to get the resource's tags." src="/assets/shift-security-left-aws-config/architecture.png" style="max-width: 800px"/>
 
-We listen to the default EventBridge event bus to be notified when a resource
-has been detected as non-compliant. We'll grab credentials from Secrets
-Manager, lookup the resource's tags and then add a comment to the relevant
-Pull Request in GitHub.
+Config sends an event to the default EventBridge event bus with the following
+format:
+
+```json
+{
+  "version": "0",
+  "id": "33a1416f-68e6-6fe1-6313-7074141badb9",
+  "detail-type": "Config Rules Compliance Change",
+  "source": "aws.config",
+  "account": "111111111111",
+  "time": "2023-05-11T17:48:07Z",
+  "region": "eu-west-1",
+  "resources": [],
+  "detail": {
+    "resourceId": "jsj-bucket-777",
+    "awsRegion": "eu-west-1",
+    "awsAccountId": "111111111111",
+    "configRuleName": "s3-bucket-logging-enabled-conformance-pack-mogxp88qe",
+    "recordVersion": "1.0",
+    "configRuleARN": "arn:aws:config:eu-west-1:111111111111:config-rule/aws-service-rule/config-conforms.amazonaws.com/config-rule-latfki",
+    "messageType": "ComplianceChangeNotification",
+    "newEvaluationResult": {
+      "evaluationResultIdentifier": {
+        "evaluationResultQualifier": {
+          "configRuleName": "s3-bucket-logging-enabled-conformance-pack-mogxp88qe",
+          "resourceType": "AWS::S3::Bucket",
+          "resourceId": "jsj-bucket-777",
+          "evaluationMode": "DETECTIVE"
+        },
+        "orderingTimestamp": "2023-05-11T17:47:56.716Z"
+      },
+      "complianceType": "NON_COMPLIANT",
+      "resultRecordedTime": "2023-05-11T17:48:06.945Z",
+      "configRuleInvokedTime": "2023-05-11T17:48:06.801Z"
+    },
+    "notificationCreationTime": "2023-05-11T17:48:07.470Z",
+    "resourceType": "AWS::S3::Bucket"
+  }
+}
+```
+
+My first instinct when building this project was to use the
+[Resource Groups Tagging API] to lookup tags, but this isn't supported by all
+AWS services and the event above doesn't contain the resource ARN. Instead, we
+can use the query feature of Config to find the tags regardless of the service
+it originated from:
+
+```typescript
+export class ConfigService implements IConfigService {
+    constructor(private readonly configServiceClient: ConfigServiceClient) {
+    }
+
+    async lookupResourceTags(
+        resourceType: string,
+        resourceId: string,
+    ): Promise<Record<string, string>> {
+        const response = await this.configServiceClient.send(
+            new SelectResourceConfigCommand({
+                Expression: `
+                    SELECT
+                      tags
+                    WHERE
+                      resourceType = '${resourceType}'
+                      AND resourceId = '${resourceId}'
+                `,
+                Limit: 100,
+            }),
+        );
+
+        /*
+            If we got a query result, turn the list of tags into an object
+            of tag keys -> tag values.
+         */
+        if (response.Results && response.Results.length === 1) {
+            return (
+                JSON.parse(response.Results[0]) as ILookupResourceTagsQueryResult
+            ).tags.reduce((out, curr) => {
+                out[curr.key] = curr.value;
+                return out;
+            }, {} as Record<string, string>);
+        } else {
+            return {};
+        }
+    }
+}
+```
+
+[Resource Groups Tagging API]: https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/overview.html
+
+Once we've got the tags, we can use the Octokit library for the GitHub API to
+find a Pull Request for that project/branch combination:
+
+```typescript
+const project = tags[`${companyIdentifier}:workload:project`];
+const ref = tags[`${companyIdentifier}:workload:ref`];
+
+if (ref === "main") {
+    logger.info("not for a pull request - skipping", {ref});
+    return;
+}
+
+const [owner, repo] = project
+    .replace("git@github.com:", "")
+    .replace(".git", "")
+    .split("/");
+
+const relevantPullsResponse = await octokit.request(
+    "GET /repos/{owner}/{repo}/pulls?state={state}",
+    {
+        owner,
+        repo,
+        state: "open",
+        head: ref,
+        headers: {
+            "X-GitHub-Api-Version": "2022-11-28",
+        },
+    },
+);
+```
+
+If one is found, we can add a comment to the PR:
+
+```typescript
+ if (relevantPulls.length === 1) {
+    const issueNumber = relevantPulls[0].number;
+
+    await octokit.request(
+        "POST /repos/{owner}/{repo}/issues/{issue_number}/comments",
+        {
+            owner,
+            repo,
+            issue_number: issueNumber,
+            body: comment,
+            headers: {
+                "X-GitHub-Api-Version": "2022-11-28",
+            },
+        },
+    );
+}
+```
 
 ## Putting it all together: the GitHub App
 
@@ -154,9 +291,9 @@ not available for any user/organization on GitHub to install.
 
 1. Create the app _in your GitHub organization_:
 
-    ![GitHub screenshot showing the option to create a new app.](/assets/shift-security-left-aws-config/github-app-setup1.png)
+   ![GitHub screenshot showing the option to create a new app.](/assets/shift-security-left-aws-config/github-app-setup1.png)
 
-    ![GitHub screenshot showing app name selection.](/assets/shift-security-left-aws-config/github-app-setup2.png)
+   ![GitHub screenshot showing app name selection.](/assets/shift-security-left-aws-config/github-app-setup2.png)
 
 2. Use a service that can capture requests, e.g. webhook.site to listen for the
    app being installed in step 4:
