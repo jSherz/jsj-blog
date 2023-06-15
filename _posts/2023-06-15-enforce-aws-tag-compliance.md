@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Enforcing AWS tags the right way - not with Tag Policies"
-date: 2023-06-14 20:18:00 +0100
+date: 2023-06-15 19:12:00 +0100
 categories:
   - AWS
   - security
@@ -11,8 +11,9 @@ categories:
 
 Tags are essential in AWS. They let us allocate costs to different teams,
 projects, services or business areas, and can be critical in operational
-response, for example if a piece of dangerously insecure infrastructure is
-created. In [Shift security left with AWS Config], I discussed providing
+response. For example, if a piece of dangerously insecure infrastructure is
+created, and you want to identify the right team to fix it without impacting
+availability. In [Shift security left with AWS Config], I discussed providing
 near-instant feedback to builders when their resources don't meet our
 compliance needs. That whole approach revolves around tags!
 
@@ -29,7 +30,7 @@ achieve a better result.
 
 ### Resource support and wildcards
 
-If we read [the documentation of supported resources], we'll immediately see
+If you read [the documentation of supported resources], you'll immediately see
 that many AWS resources just aren't supported. Additionally, there's a real mix
 of services that do and don't support a wildcard syntax, e.g. `athena:*` to
 target all Athena resources. This matters as we're trying to fit as much as we
@@ -61,8 +62,7 @@ through the source code of the UI to find the _real_ allowed values.
 ![Transpiled JavaScript code showing valid tag resource values](/assets/enforce-aws-tag-compliance/resources-in-source-code.png)
 
 Taking the above list gives us 334 allowed resource types, a far cry from the
-290 documented in the console. The full diff can be found at the end of the
-article.
+290 in the documentation. The full diff can be found at the end of the article.
 
 ### No tags, no problem!
 
@@ -79,20 +79,177 @@ We've spent a fair amount of time diving into why Tag Policies aren't a great
 way to ensure tag compliance, so what can we do instead? Luckily, [AWS Config]
 allows us to inspect the tags on a resource and write custom rules to check
 they're as we expect. If you haven't heard of Config, it's a service that
-evaluates a number of rules against your resources to decide if they meet
-certain compliance criteria, for example checking an S3 bucket isn't open to
-the public. In [Shift security left with AWS Config], I use the query feature
-of Config to write an SQL query that fetches tags for any supported resource.
-Super handy!
+evaluates your resources to decide if they meet certain compliance criteria,
+for example checking an S3 bucket isn't open to the public. In
+[Shift security left with AWS Config], I use a feature of Config to write an
+SQL query that fetches tags for any supported resource. Super handy!
+
+[AWS Config]: https://aws.amazon.com/config/
 
 Let's write a custom Config rule that checks a resource has the tags we
-require:
+require. We're going to use the CloudFormation Guard Domain-Specific-Language
+(DSL), but you can also make custom Config rules with Lambda functions.
 
-TODO
+We'll start by requiring a tag that we want to enforce for all resource types:
+
+```
+tags["shersoft-ltd:workload:project"] !empty
+```
+
+If you want to follow along in the console while you're developing your rule,
+see these steps:
+
+<video muted controls>
+    <source src="/assets/enforce-aws-tag-compliance/add-config-rule-demo.webm" type="video/webm">
+</video>
+
+With the rule in place, we can immediately see which resource are and aren't
+compliant. We can expand our Config rule to cover some other tags:
+
+```
+tags["shersoft-ltd:workload:project"] !empty
+
+tags["shersoft-ltd:workload:ref"] !empty
+
+tags["shersoft-ltd:devops:environment"] !empty
+```
+
+We could additionally ensure that the tag value matches one of a set of allowed
+values. Let's do that with the environment tag:
+
+```
+tags["shersoft-ltd:devops:environment"] == /staging|production/
+```
+
+At this point, you might be wondering how you can debug rules written in the
+Guard language, especially without incurring the cost of repeated Config
+evaluations. Luckily there's a CLI that we can use for this purpose. Install
+it following [the instructions on GitHub]. I'm on a Mac, so will just do:
+
+[the instructions on GitHub]: https://github.com/aws-cloudformation/cloudformation-guard#installation
+
+```bash
+brew install cloudformation-guard
+```
+
+We'll take the configuration item JSON, in this case a CodeArtifact repo, and
+place it into `resource.json`:
+
+```json
+{
+  "version": "1.3",
+  "accountId": "123456789012",
+  "configurationItemCaptureTime": "2023-05-24T19:50:28.418Z",
+  "configurationItemStatus": "ResourceDiscovered",
+  "configurationStateId": "1684957828418",
+  "configurationItemMD5Hash": "",
+  "arn": "arn:aws:codeartifact:eu-west-1:123456789012:repository/test/repo",
+  "resourceType": "AWS::CodeArtifact::Repository",
+  "resourceId": "arn:aws:codeartifact:eu-west-1:123456789012:repository/test/repo",
+  "resourceName": "repo",
+  "awsRegion": "eu-west-1",
+  "availabilityZone": "Regional",
+  "tags": {},
+  "relatedEvents": [],
+  "relationships": [],
+  "configuration": {
+    "RepositoryName": "my-little-repo",
+    "Name": "repo",
+    "DomainName": "test",
+    "DomainOwner": "123456789012",
+    "Arn": "arn:aws:codeartifact:eu-west-1:123456789012:repository/test/repo",
+    "ExternalConnections": [],
+    "Upstreams": [
+      "npm-store"
+    ],
+    "Tags": []
+  },
+  "supplementaryConfiguration": {},
+  "resourceTransitionStatus": "None"
+}
+```
+
+You'll see that it's got no tags. With that in place, we'll put the tag rule
+we're developing into `tag-rule.guard`, and run the CLI:
+
+```bash
+cfn-guard validate --rules tag-rule.guard --data resource.json
+```
+
+We'll be given detailed debugging information about the rule evaluation -
+scroll to the right in the code pane to view the full message:
+
+```
+resource.json Status = FAIL
+FAILED rules
+tag-rule.guard/default    FAIL
+---
+Evaluation of rules tag-rule.guard against data resource.json
+--
+Property traversed until [/tags] in data [resource.json] is not compliant with [tag-rule.guard/default] due to retrieval error. Error Message [Could not find key shersoft-ltd:workload:project inside struct at path /tags[L:13,C:10]]
+Property traversed until [/tags] in data [resource.json] is not compliant with [tag-rule.guard/default] due to retrieval error. Error Message [Could not find key shersoft-ltd:workload:ref inside struct at path /tags[L:13,C:10]]
+Property traversed until [/tags] in data [resource.json] is not compliant with [tag-rule.guard/default] due to retrieval error. Error Message [Could not find key shersoft-ltd:devops:environment inside struct at path /tags[L:13,C:10]]
+--
+```
+
+How about with all tags present, and an invalid tag value in environment? Try
+updating the tags property in resource.json:
+
+```json5
+{
+  // ...
+  "tags": {
+    "shersoft-ltd:workload:project": "test",
+    "shersoft-ltd:workload:ref": "test",
+    "shersoft-ltd:devops:environment": "lemons"
+  },
+  // ...
+}
+```
+
+Then re-run the validate command:
+
+```bash
+cfn-guard validate --rules tag-rule.guard --data resource.json
+```
+
+We get a new error!
+
+```
+... provided value ["lemons"] did not match expected value ["/staging|production/"]...
+```
+
+This allows us to rapidly iterate on our tag Config rule for free. We could
+even store the configuration items as a set of JSON test fixtures, call the CLI
+and then verify the resulting output in integration tests.
+
+Tag Policies let us select resource types that we want to enforce the tags for,
+and we can achieve the same thing in our Config rule:
+
+```
+rule check_retention_tag when resourceType == "AWS::S3::Bucket" {
+  tags["shersoft-ltd:compliance:retention"] !empty
+}
+```
+
+`cfn-guard` will now indicate that it didn't check for that tag:
+
+```
+Rule [tag-rule.guard/check_retention_tag] is not applicable for template [resource.json]
+```
+
+## Conclusion
+
+Tag Policies have a number of practical limitations, including their lack of
+resource support, and requiring SCPs that are incompatible with some IaC tools.
+We can use a custom Config rule to mandate a set of tags based on the
+resource type, and achieve tagging harmony across our AWS organisation.
 
 ## See also
 
 * [Tagging Best Practices - AWS Whitepapers](https://docs.aws.amazon.com/whitepapers/latest/tagging-best-practices/tagging-best-practices.html)
+* [Writing AWS CloudFormation Guard rules - AWS Documentation](https://docs.aws.amazon.com/cfn-guard/latest/ug/writing-rules.html)
+* [Creating AWS Config Custom Policy Rules - AWS Documentation](https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config_develop-rules_cfn-guard.html)
 
 ### The full documentation vs. source code diff for Tag Policy resources
 
