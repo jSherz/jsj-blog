@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Enforcing AWS tags the right way - not with Tag Policies"
+title: "Enforcing AWS tags the right way - without Tag Policies"
 date: 2023-06-15 19:12:00 +0100
 categories:
   - AWS
