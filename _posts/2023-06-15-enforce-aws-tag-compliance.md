@@ -11,9 +11,10 @@ categories:
 
 Tags are essential in AWS. They let us allocate costs to different teams,
 projects, services or business areas, and can be critical in operational
-response. For example, if a piece of dangerously insecure infrastructure is
-created, and you want to identify the right team to fix it without impacting
-availability. In [Shift security left with AWS Config], I discussed providing
+response. Tags get us from a page or security related notification to the
+right team much faster, especially for resources that don't support names or
+those that are named automatically by Infrastructure as Code (IaC) tools like
+CDK. In [Shift security left with AWS Config], I discussed providing
 near-instant feedback to builders when their resources don't meet our
 compliance needs. That whole approach revolves around tags!
 
@@ -62,7 +63,8 @@ through the source code of the UI to find the _real_ allowed values.
 ![Transpiled JavaScript code showing valid tag resource values](/assets/enforce-aws-tag-compliance/resources-in-source-code.png)
 
 Taking the above list gives us 334 allowed resource types, a far cry from the
-290 in the documentation. The full diff can be found at the end of the article.
+290 in the documentation. Check out the full diff at the end of the article if
+you're curious about what's missing.
 
 ### No tags, no problem!
 
@@ -71,7 +73,7 @@ missing, the policies aren't applied, and thus we get off scot-free. You might
 be tempted to enforce the use of tags with Service Control Policies (SCPs), but
 many services and tools apply the tags with a second operation once the
 resource has been created or updated. The net result? We can't enforce that a
-user provides the tags we want to mandate.
+user provides our mandatory tags.
 
 ## What's the solution?
 
@@ -244,6 +246,11 @@ Tag Policies have a number of practical limitations, including their lack of
 resource support, and requiring SCPs that are incompatible with some IaC tools.
 We can use a custom Config rule to mandate a set of tags based on the
 resource type, and achieve tagging harmony across our AWS organisation.
+
+We're not blocking resources from being created or updated with this solution,
+but we do get reporting of their compliance. We can combine this solution with
+the one in [Shift security left with AWS Config] to give builders near-instant
+feedback on the resource's tagging - before their Pull Request lands.
 
 ## See also
 
