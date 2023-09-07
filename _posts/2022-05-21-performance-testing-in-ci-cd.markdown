@@ -432,7 +432,7 @@ These repos are named "nodejs-beer" as they were born out of a discussion with
 an exceptional ex-colleague of mine who, after losing a small performance
 related bet, now owes me a beer. I'm still waiting to collect on that one...
 
-* [App code, Ansible, Terraform: nodejs-beer-performance](https://github.com/alsherz-ltd/nodejs-beer-performance)
+* [App code, Ansible, Terraform: nodejs-beer-performance](https://github.com/shersoft-ltd/nodejs-beer-performance)
 * [Gatling simulations: nodejs-beer-performance-test](https://github.com/alsherz-ltd/nodejs-beer-performance-test)
 
 **NB:** the infrastructure contained in the above repos is a quick-and-dirty
