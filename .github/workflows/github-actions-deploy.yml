@@ -21,7 +21,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Setup Ruby and install dependencies
         uses: ruby/setup-ruby@v1
@@ -33,7 +33,7 @@ jobs:
         run: bundle exec jekyll build
 
       - name: Authenticate with AWS
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::262312054792:role/jsherz-com-github-actions
           aws-region: eu-west-1
