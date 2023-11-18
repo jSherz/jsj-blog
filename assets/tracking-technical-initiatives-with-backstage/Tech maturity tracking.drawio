@@ -1,0 +1,55 @@
+<mxfile host="app.diagrams.net" modified="2023-11-19T17:26:48.355Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36" etag="9e6IhEX1qIwTBk-DDcwX" version="22.1.3" type="device">
+  <diagram name="Page-1" id="tUOq9JI6vbLF9e1w_BRn">
+    <mxGraphModel dx="1026" dy="556" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="MQPMModwPsm5g1JCXW80-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="MQPMModwPsm5g1JCXW80-1" target="MQPMModwPsm5g1JCXW80-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="MQPMModwPsm5g1JCXW80-1" value="Backstage&lt;br&gt;&lt;br&gt;EC2 instance, ECS task etc" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="280" y="159.5" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="MQPMModwPsm5g1JCXW80-2" value="Organization management account" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_account;strokeColor=#CD2264;fillColor=none;verticalAlign=top;align=left;spacingLeft=30;fontColor=#CD2264;dashed=0;" vertex="1" parent="1">
+          <mxGeometry x="440" y="120" width="240" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="MQPMModwPsm5g1JCXW80-3" value="IAM role for&lt;br&gt;discovering org&lt;br&gt;accounts" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws3.iam;fillColor=#759C3E;gradientColor=none;" vertex="1" parent="MQPMModwPsm5g1JCXW80-2">
+          <mxGeometry x="60" y="39.5" width="42" height="81" as="geometry" />
+        </mxCell>
+        <mxCell id="MQPMModwPsm5g1JCXW80-5" value="Member AWS account" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_account;strokeColor=#CD2264;fillColor=none;verticalAlign=top;align=left;spacingLeft=30;fontColor=#CD2264;dashed=0;" vertex="1" parent="1">
+          <mxGeometry x="720" y="80" width="200" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="MQPMModwPsm5g1JCXW80-6" value="IAM role for&lt;br&gt;discovering&lt;br&gt;resources" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws3.iam;fillColor=#759C3E;gradientColor=none;" vertex="1" parent="MQPMModwPsm5g1JCXW80-5">
+          <mxGeometry x="60" y="39.5" width="42" height="81" as="geometry" />
+        </mxCell>
+        <mxCell id="MQPMModwPsm5g1JCXW80-7" value="Member AWS account" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_account;strokeColor=#CD2264;fillColor=none;verticalAlign=top;align=left;spacingLeft=30;fontColor=#CD2264;dashed=0;" vertex="1" parent="1">
+          <mxGeometry x="720" y="320" width="200" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="MQPMModwPsm5g1JCXW80-8" value="" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws3.iam;fillColor=#759C3E;gradientColor=none;" vertex="1" parent="MQPMModwPsm5g1JCXW80-7">
+          <mxGeometry x="60" y="39.5" width="42" height="81" as="geometry" />
+        </mxCell>
+        <mxCell id="MQPMModwPsm5g1JCXW80-13" value="Member AWS account" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_account;strokeColor=#CD2264;fillColor=none;verticalAlign=top;align=left;spacingLeft=30;fontColor=#CD2264;dashed=0;" vertex="1" parent="1">
+          <mxGeometry x="730" y="330" width="200" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="MQPMModwPsm5g1JCXW80-14" value="" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws3.iam;fillColor=#759C3E;gradientColor=none;" vertex="1" parent="MQPMModwPsm5g1JCXW80-13">
+          <mxGeometry x="60" y="39.5" width="42" height="81" as="geometry" />
+        </mxCell>
+        <mxCell id="MQPMModwPsm5g1JCXW80-15" value="Member AWS account" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_account;strokeColor=#CD2264;fillColor=none;verticalAlign=top;align=left;spacingLeft=30;fontColor=#CD2264;dashed=0;" vertex="1" parent="1">
+          <mxGeometry x="740" y="340" width="200" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="MQPMModwPsm5g1JCXW80-16" value="" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws3.iam;fillColor=#759C3E;gradientColor=none;" vertex="1" parent="MQPMModwPsm5g1JCXW80-15">
+          <mxGeometry x="60" y="39.5" width="42" height="81" as="geometry" />
+        </mxCell>
+        <mxCell id="MQPMModwPsm5g1JCXW80-20" value="&lt;font style=&quot;font-size: 15px;&quot;&gt;Repeated for&lt;br&gt;all other&lt;br&gt;AWS accounts&lt;/font&gt;" style="strokeWidth=1;shadow=0;dashed=0;align=center;html=1;shape=mxgraph.mockup.text.stickyNote2;fontColor=#666666;mainText=;fontSize=17;whiteSpace=wrap;fillColor=#ffffcc;strokeColor=#F62E00;" vertex="1" parent="MQPMModwPsm5g1JCXW80-15">
+          <mxGeometry x="80" y="60" width="140" height="145" as="geometry" />
+        </mxCell>
+        <mxCell id="MQPMModwPsm5g1JCXW80-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="MQPMModwPsm5g1JCXW80-3" target="MQPMModwPsm5g1JCXW80-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="MQPMModwPsm5g1JCXW80-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="MQPMModwPsm5g1JCXW80-3" target="MQPMModwPsm5g1JCXW80-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
