@@ -13,9 +13,9 @@ description: > # this means to ignore newlines until "baseurl:"
   James Sherwood-Jones' collection of snippets, tips and tutorials.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://jsherz.com" # the base hostname & protocol for your site
-twitter_username: TheSherz
 github_username: jSherz
-linkedin_username: james-sherwood-jones-775a13a0
+linkedin_username: jsherz
+cdk_course_link: https://www.udemy.com/course/aws-cdk-in-typescript/?couponCode=CDK-WITH-JSJ-2024-01
 
 # Build settings
 markdown: kramdown

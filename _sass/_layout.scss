@@ -62,6 +62,13 @@ svg {
 #homepage, #archive {
   & > div, hr {
     max-width: $content-width;
+  }
+
+  & > div {
+    margin: 0 auto 1rem auto;
+  }
+
+  & > hr {
     margin: 0 auto;
   }
 
@@ -190,19 +197,15 @@ svg {
 
 #open-source-container {
   & > ul {
+    max-width: 64em;
     list-style: none;
     margin: 0;
     padding: 0;
 
     @include media-query($on-tablet) {
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
       flex-wrap: wrap;
-      height: 21rem;
-    }
-
-    @include media-query($on-laptop) {
-      height: 13rem;
     }
 
     li {
@@ -387,4 +390,16 @@ th, td {
 
 th {
   background-color: #ddd;
+}
+
+#homepage #cdk-course, .post #cdk-course {
+  max-width: $content-width;
+  margin: 1rem auto;
+  background-color: #c7f2ff;
+  border: dashed 0.2rem darken(#c7f2ff, 20%);
+  padding: 0.5rem;
+
+  p {
+    margin: 0;
+  }
 }
