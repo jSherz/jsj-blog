@@ -15,7 +15,7 @@ baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://jsherz.com" # the base hostname & protocol for your site
 github_username: jSherz
 linkedin_username: jsherz
-cdk_course_link: https://www.udemy.com/course/aws-cdk-in-typescript/?couponCode=CDK-WITH-JSJ-2024-03
+cdk_course_link: https://www.udemy.com/course/aws-cdk-in-typescript/?couponCode=CDK-WITH-JSJ-2024-04
 
 # Build settings
 markdown: kramdown
