@@ -1,3 +1,5 @@
+@use "sass:color";
+
 svg {
   width: 1em;
 }
@@ -25,18 +27,18 @@ svg {
     }
 
     &:hover {
-      color: lighten($brand-color, 60%);
+      color: color.adjust($brand-color, $lightness: 60%);
 
       svg path {
-        fill: lighten($brand-color, 60%);
+        fill: color.adjust($brand-color, $lightness: 60%);
       }
     }
 
     &:active {
-      color: lighten($brand-color, 40%);
+      color: color.adjust($brand-color, $lightness: 40%);
 
       svg path {
-        fill: lighten($brand-color, 40%);
+        fill: color.adjust($brand-color, $lightness: 40%);
       }
     }
   }
@@ -146,20 +148,20 @@ svg {
   }
 
   p {
-    color: lighten($text-color, 20%);
+    color: color.adjust($text-color, $lightness: 20%);
     word-break: break-all;
   }
 }
 
 #post-list-read-more {
   text-align: center;
-  color: lighten($text-color, 30%);
+  color: color.adjust($text-color, $lightness: 30%);
 
   a {
-    color: lighten(#30508E, 10%);
+    color: color.adjust(#30508E, $lightness: 10%);
 
     &:hover {
-      color: lighten(#30508E, 30%);
+      color: color.adjust(#30508E, $lightness: 30%);
     }
   }
 }
@@ -177,7 +179,7 @@ svg {
 
     &:hover {
       svg path {
-        fill: lighten(#30508E, 30%);
+        fill: color.adjust(#30508E, $lightness: 30%);
       }
     }
   }
@@ -186,7 +188,7 @@ svg {
     width: 0.8em;
 
     path {
-      fill: lighten(#30508E, 10%);
+      fill: color.adjust(#30508E, $lightness: 10%);
     }
   }
 
@@ -247,7 +249,7 @@ svg {
 
         &:hover {
           svg path {
-            fill: lighten(#30508E, 20%);
+            fill: color.adjust(#30508E, $lightness: 20%);
           }
         }
       }
@@ -317,7 +319,7 @@ footer {
   }
 
   p {
-    color: darken(white, 10%);
+    color: color.adjust(white, $lightness: -10%);
   }
 
   ul {
@@ -396,7 +398,7 @@ th {
   max-width: $content-width;
   margin: 1rem auto;
   background-color: #c7f2ff;
-  border: dashed 0.2rem darken(#c7f2ff, 20%);
+  border: dashed 0.2rem color.adjust(#c7f2ff, $lightness: -20%);
   padding: 0.5rem;
 
   p {

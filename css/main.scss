@@ -3,6 +3,7 @@
 ---
 
 @charset "utf-8";
+@use "sass:color";
 @use "sass:math";
 
 $base-em-size: 16;
@@ -25,8 +26,8 @@ $background-color: #f1f3f6;
 $brand-color: #203152;
 
 //$grey-color:       #828282;
-//$grey-color-light: lighten($grey-color, 40%);
-//$grey-color-dark:  darken($grey-color, 25%);
+//$grey-color-light: color.adjust($grey-color, $lightness: 40%);
+//$grey-color-dark:  color.adjust($grey-color, $lightness: -25%);
 
 // Width of the content area
 $content-width: em(1024);

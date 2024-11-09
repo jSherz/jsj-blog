@@ -1,6 +1,7 @@
 /**
  * Basic styling
  */
+@use "sass:color";
 @use "sass:list";
 
 * {
@@ -25,6 +26,6 @@ a {
     color: #30508E;
 
     &:hover {
-        color: lighten(#30508E, 20%);
+        color: color.adjust(#30508E, $lightness: 20%);
     }
 }
