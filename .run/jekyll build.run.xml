@@ -13,7 +13,7 @@
       </COVERAGE_PATTERN>
     </EXTENSION>
     <EXTENSION ID="org.jetbrains.plugins.ruby.rails.run.RailsRunConfigurationExtension" SCRATCH_USE_RAILS_RUNNER="false" />
-    <RUBY_RUN_CONFIG NAME="SCRIPT_PATH" VALUE="$MODULE_DIR$/vendor/bundle/ruby/3.1.0/bin/jekyll" />
+    <RUBY_RUN_CONFIG NAME="SCRIPT_PATH" VALUE="$MODULE_DIR$/vendor/bundle/ruby/3.4.0/bin/jekyll" />
     <RUBY_RUN_CONFIG NAME="SCRIPT_ARGS" VALUE="build" />
     <method v="2" />
   </configuration>

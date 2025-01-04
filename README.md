@@ -10,10 +10,10 @@ Unless you're a big fan of raw Markdown, you can view the blog at [https://jsher
 
 ## Developing and publishing
 
-Install rbenv and then Ruby version 3.3.6
+Install rbenv and then Ruby version 3.4.1
 
 ```bash
-rbenv install 3.3.6
+rbenv install 3.4.1
 ```
 
 To run a development server on port 4000, use:
