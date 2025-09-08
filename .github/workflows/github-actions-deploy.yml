@@ -34,7 +34,7 @@ jobs:
 
       - name: Authenticate with AWS
         if: github.ref == 'refs/heads/main'
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           role-to-assume: arn:aws:iam::262312054792:role/jsherz-com-github-actions
           aws-region: eu-west-1
